@@ -2,7 +2,7 @@
 
 ## Nombre del Proyecto
 
-[Nombre del proyecto aquí]
+Creación de agente IA usando LangChain Framework
 
 ## Objetivo del Proyecto
 
