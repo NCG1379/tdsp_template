@@ -100,6 +100,6 @@ Hay que tener en cuenta que estas fechas son de ejemplo, estas deben ajustarse d
 
 ## Aprobaciones
 
-- [Nombre y cargo del aprobador del proyecto]
-- [Firma del aprobador]
-- [Fecha de aprobación]
+- Diego Valero (Product Manager)
+- Diego Fernando Valero Molano
+- 30/06/2025
