@@ -90,9 +90,13 @@ Hay que tener en cuenta que estas fechas son de ejemplo, estas deben ajustarse d
 
 ## Stakeholders
 
-- [Nombre y cargo de los stakeholders del proyecto]
-- [Descripción de la relación con los stakeholders]
-- [Expectativas de los stakeholders]
+- Gerente de Ciberseguridad: es el encargado de aprobar la facturación previamente informado por el equipo SOC y de cacería de amenazas del cumplimiento de los acuerdos de éxito del proyecto.
+- Analista SOC: profesional capacitado en la revisión de eventos y gestión de incidentes de ciberseguridad.
+- Cazador de Amenazas: profesional capacitado en la revisión de eventos e indicadores de compromiso para validar la efectividad de los controles en una empresa para la detección de los ciberatacantes.
+- Profesionales de ciberseguridad: profesionales de las diferentes ramas interesados en validar IoCs de IPs y dominios maliciosos.
+
+
+- Los stakeholders esperan que esta herramienta de inteligencia artificial pueda apoyarlos en su día a día, para revisar y comprobar los IoC que les llegan diariamente o los que se detectan por las herramientas de monitoreo, para comprobar su nivel de riesgo, facilitando la tarea de búsqueda y priorización de los riesgos.
 
 ## Aprobaciones
 
