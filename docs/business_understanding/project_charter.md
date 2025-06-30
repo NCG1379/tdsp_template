@@ -28,18 +28,19 @@ Creación de agente IA usando LangChain Framework
 
 | Etapa | Duración Estimada | Fechas |
 |------|---------|-------|
-| Entendimiento del negocio y carga de datos | 2 semanas | del 1 de mayo al 15 de mayo |
-| Preprocesamiento, análisis exploratorio | 4 semanas | del 16 de mayo al 15 de junio |
-| Modelamiento y extracción de características | 4 semanas | del 16 de junio al 15 de julio |
-| Despliegue | 2 semanas | del 16 de julio al 31 de julio |
-| Evaluación y entrega final | 3 semanas | del 1 de agosto al 21 de agosto |
+| Entendimiento del negocio y carga de datos | 1 semanas | del 25 de junio al 1 de julio |
+| Preprocesamiento, análisis exploratorio | 1 semanas | del 2 de julio al 8 de julio |
+| Modelamiento y extracción de características | 1 semanas | del 9 de julio al 15 de julio |
+| Despliegue | 1 semanas | del 16 de julio al 22 de julio |
+| Evaluación y entrega final | 1 semanas | del 23 de julio al 30 de julio |
 
 Hay que tener en cuenta que estas fechas son de ejemplo, estas deben ajustarse de acuerdo al proyecto.
 
 ## Equipo del Proyecto
 
-- [Nombre y cargo del líder del proyecto]
-- [Nombre y cargo de los miembros del equipo]
+- Líder Proyecto - Diego Valero
+- Científico de Datos - Jose Ávila
+- Ciéntífico de Datos - Nicolas Cubillos
 
 ## Presupuesto
 
