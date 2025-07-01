@@ -1,27 +1,61 @@
 import os
 import json
+import ipaddress
 import urllib.request
 import urllib.parse
 from datetime import datetime
 from setting import API_KEY, API_URL_IP, API_URL_DOMAIN
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 class VirusTotal(BaseModel):
     ioc: str = Field(description="IP o dominio para buscar información en VirusTotal")
+    
+    @field_validator("ioc")
+    def validate_ioc(cls, value):
+        try:
+            ipaddress.ip_address(value)
+            return value  # It's a valid IP address
+        except ValueError:
+            # If it's not an IP, assume it's a domain (you can improve validation later)
+            if "." in value:
+                return value
+            raise ValueError("Invalid IOC. Must be a valid IP address or domain.")
 
 class AbuseIPDB(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en VirusTotal")
+    ioc: str = Field(description="IP o dominio para buscar información en AbuseIPDB")
 
 class WHOIS_RDAP(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en VirusTotal")
+    ioc: str = Field(description="IP o dominio para buscar información en WHOIS_RDAP")
 
 class ShodanIO(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en VirusTotal")
+    ioc: str = Field(description="IP o dominio para buscar información en ShodanIO")
 
 def virustotal(ioc):
-    """Función para traer información de una IP de Virus Total"""
-    # API_VIRUSTOTAL_KEY = os.environ.get("API_VIRUSTOTAL_KEY")
-    return VirusTotal_APIRequest().display_ip_info(ioc)
+    """Función para traer información de un ioc de virustotal"""
+    try:
+        validated_ioc = VirusTotal(ioc=ioc).ioc
+    except ValueError as e:
+        return {"error": str(e)}
+
+    try:
+        # Try parsing as IP
+        ipaddress.ip_address(validated_ioc)
+        return VirusTotal_APIRequest().display_ip_info(validated_ioc)
+    except ValueError:
+        # If not an IP, treat it as a domain
+        return VirusTotal_APIRequest().display_domain_info(validated_ioc)
+
+def abuseipdb(ioc):
+    """Función para traer información de un ioc de abuseipdb"""
+    return AbuseIPDB_APIRequest().request(ioc)
+
+def whois_rdap(ioc):
+    """Función para traer información de un ioc de whois_rdap"""
+    return WHOIS_RDAP_APIRequest().request(ioc)
+
+def shodanio(ioc):
+    """Función para traer información de un ioc de shodanio"""
+    return ShodanIO_APIRequest().request(ioc)
 
 
 class VirusTotal_APIRequest():
@@ -94,16 +128,6 @@ class VirusTotal_APIRequest():
             f.write("\n".join(result))
 
         return "\n".join(result)
-    
-    def fetch_data(self, url):
-        request = urllib.request.Request(url, headers={'x-apikey': API_KEY})
-        try:
-            with urllib.request.urlopen(request) as response:
-                data = json.load(response)
-                return data
-        except urllib.error.URLError as e:
-            print(f"Failed to retrieve data: {e}")
-            return None
 
     def display_domain_info(self, domain):
         url = API_URL_DOMAIN + urllib.parse.quote(domain)
