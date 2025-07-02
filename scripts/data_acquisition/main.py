@@ -4,12 +4,16 @@ import ipaddress
 import urllib.request
 import urllib.parse
 from datetime import datetime
-#from setting import API_KEY, API_URL_IP, API_URL_DOMAIN
+from setting import API_KEY, API_URL_IP, API_URL_DOMAIN
 from pydantic import BaseModel, Field, field_validator
 
-API_KEY = "VT_API"
 
 def validate_ioc_value(value: str) -> str:
+    """
+    Validate if the input value is an IP address or a domain.
+    Returns a tuple: (value, 'ip') or (value, 'domain').
+    Raises ValueError if neither.
+    """
     try:
         ipaddress.ip_address(value)
         return (value, 'ip')  # It's a valid IP address
@@ -17,33 +21,40 @@ def validate_ioc_value(value: str) -> str:
         if "." in value:
             return (value, 'domain')  # It's a domain
         raise ValueError("Invalid IOC. Must be a valid IP address or domain.")
-    
+
 class IOCValidatedModel(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información")
+    """
+    Base Pydantic model for validating and storing an IOC (IP or domain).
+    """
+    ioc: str = Field(description="IP or Domain to query for information")
 
     @field_validator("ioc")
     def validate_ioc(cls, value):
         return validate_ioc_value(value)
 
-
 class VirusTotal(IOCValidatedModel):
-    
-    def fetch_data(self):
+    """
+    Class for querying VirusTotal API for IP or domain information.
+    Inherits IOC validation from IOCValidatedModel.
+    """
+    def display_info(self):
+        """
+        Display information for the IOC, dispatching to the correct method
+        based on whether the IOC is an IP or a domain.
+        """
         ioc_value, ioc_type = self.ioc
-        if ioc_type == 'domain':
-            self.url = f"https://www.virustotal.com/api/v3/domains/{ioc_value}"
-        elif ioc_type == 'ip':
-            self.url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}"
-        
-        request = urllib.request.Request(self.url, headers={'x-apikey': API_KEY})
-        try:
-            with urllib.request.urlopen(request) as response:
-                return json.load(response)
-        except urllib.error.URLError as e:
-            print(f"Failed to retrieve data: {e}")
-            return None
-    
+        if ioc_type == 'ip':
+            return self.display_ip_info()
+        elif ioc_type == 'domain':
+            return self.display_domain_info()
+        else:
+            raise ValueError("Unsupported IOC type. Must be either an IP address or a domain.")
+
     def get_associated_domains(self):
+        """
+        For an IP address, fetch associated domains from VirusTotal.
+        Returns a list of domain names.
+        """
         ioc_value, ioc_type = self.ioc
         if ioc_type != 'ip':
             raise ValueError("Associated domains can only be retrieved for IP addresses.")
@@ -56,15 +67,24 @@ class VirusTotal(IOCValidatedModel):
         except urllib.error.URLError as e:
             print(f"Failed to retrieve associated domains for {self.ip}: {e}")
             return []
-    
+
     def display_ip_info(self):
+        """
+        Fetch and display information about an IP address from VirusTotal.
+        Writes results to output/single-ip/{ip}.txt and returns the output string.
+        """
         ioc_value, ioc_type = self.ioc
         if ioc_type != 'ip':
             raise ValueError("display_ip_info can only be used with IP addresses.")
-        data = self.fetch_data()
-        if not data:
+        url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}"
+        request = urllib.request.Request(url, headers={'x-apikey': API_KEY, 'accept': 'application/json'})
+        try:
+            with urllib.request.urlopen(request) as response:
+                data = json.load(response)
+        except urllib.error.URLError as e:
+            print(f"Failed to retrieve data: {e}")
             return
-    
+
         attr = data.get('data', {}).get('attributes', {})
         stats = attr.get('last_analysis_stats', {})
         domains = self.get_associated_domains()
@@ -96,6 +116,10 @@ class VirusTotal(IOCValidatedModel):
         return "\n".join(lines)
 
     def display_domain_info(self):
+        """
+        Fetch and display information about a domain from VirusTotal.
+        Writes results to output/single-domain/{domain}.txt and returns the output string.
+        """
         ioc_value, ioc_type = self.ioc
         if ioc_type != 'domain':
             raise ValueError("display_domain_info can only be used with domains.")
@@ -107,7 +131,7 @@ class VirusTotal(IOCValidatedModel):
         except urllib.error.URLError as e:
             print(f"Failed to retrieve data: {e}")
             return
-    
+
         attr = data.get('data', {}).get('attributes', {})
         stats = attr.get('last_analysis_stats', {})
         lines = [
@@ -129,6 +153,8 @@ class VirusTotal(IOCValidatedModel):
         return "\n".join(lines)
 
 
+newConnection = VirusTotal(ioc="google.com")
+print(newConnection.display_info())
 
 class AbuseIPDB(IOCValidatedModel):
     pass
