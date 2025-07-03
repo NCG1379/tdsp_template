@@ -4,190 +4,181 @@ import ipaddress
 import urllib.request
 import urllib.parse
 from datetime import datetime
-from setting import API_KEY, API_URL_IP, API_URL_DOMAIN
+# from setting import API_KEY, API_URL_IP, API_URL_DOMAIN     # This is giving some issues rn, might restore later
 from pydantic import BaseModel, Field, field_validator
 
-class VirusTotal(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en VirusTotal")
-    
+
+def validate_ioc_value(value: str) -> str:
+    """
+    Validate if the input value is an IP address or a domain.
+    Returns a tuple: (value, 'ip') or (value, 'domain').
+    Raises ValueError if neither.
+    """
+    try:
+        ipaddress.ip_address(value)
+        return (value, 'ip')  # It's a valid IP address
+    except ValueError:
+        if "." in value:
+            return (value, 'domain')  # It's a domain
+        raise ValueError("Invalid IOC. Must be a valid IP address or domain.")
+
+class IOCValidatedModel(BaseModel):
+    """
+    Base Pydantic model for validating and storing an IOC (IP or domain).
+    """
+    ioc: str = Field(description="IP or Domain to query for information")
+
     @field_validator("ioc")
     def validate_ioc(cls, value):
-        try:
-            ipaddress.ip_address(value)
-            return value  # It's a valid IP address
-        except ValueError:
-            # If it's not an IP, assume it's a domain (you can improve validation later)
-            if "." in value:
-                return value
-            raise ValueError("Invalid IOC. Must be a valid IP address or domain.")
+        return validate_ioc_value(value)
 
-class AbuseIPDB(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en AbuseIPDB")
+class VirusTotal(IOCValidatedModel):
+    """
+    Class for querying VirusTotal API for IP or domain information.
+    Inherits IOC validation from IOCValidatedModel.
+    """
+    def display_info(self):
+        """
+        Display information for the IOC, dispatching to the correct method
+        based on whether the IOC is an IP or a domain.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type == 'ip':
+            return self.display_ip_info()
+        elif ioc_type == 'domain':
+            return self.display_domain_info()
+        else:
+            raise ValueError("Unsupported IOC type. Must be either an IP address or a domain.")
 
-class WHOIS_RDAP(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en WHOIS_RDAP")
-
-class ShodanIO(BaseModel):
-    ioc: str = Field(description="IP o dominio para buscar información en ShodanIO")
-
-def virustotal(ioc):
-    """Función para traer información de un ioc de virustotal"""
-    try:
-        validated_ioc = VirusTotal(ioc=ioc).ioc
-    except ValueError as e:
-        return {"error": str(e)}
-
-    try:
-        # Try parsing as IP
-        ipaddress.ip_address(validated_ioc)
-        return VirusTotal_APIRequest().display_ip_info(validated_ioc)
-    except ValueError:
-        # If not an IP, treat it as a domain
-        return VirusTotal_APIRequest().display_domain_info(validated_ioc)
-
-def abuseipdb(ioc):
-    """Función para traer información de un ioc de abuseipdb"""
-    return AbuseIPDB_APIRequest().request(ioc)
-
-def whois_rdap(ioc):
-    """Función para traer información de un ioc de whois_rdap"""
-    return WHOIS_RDAP_APIRequest().request(ioc)
-
-def shodanio(ioc):
-    """Función para traer información de un ioc de shodanio"""
-    return ShodanIO_APIRequest().request(ioc)
-
-
-class VirusTotal_APIRequest():
-
-    def fetch_data(self, url):
+    def get_associated_domains(self):
+        """
+        For an IP address, fetch associated domains from VirusTotal.
+        Returns a list of domain names.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type != 'ip':
+            raise ValueError("Associated domains can only be retrieved for IP addresses.")
+        url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}/resolutions"
         request = urllib.request.Request(url, headers={'x-apikey': API_KEY})
+        try:
+            with urllib.request.urlopen(request) as response:
+                data = json.load(response)
+                return [res['attributes']['host_name'] for res in data.get('data', [])]
+        except urllib.error.URLError as e:
+            print(f"Failed to retrieve associated domains for {self.ip}: {e}")
+            return []
+
+    def display_ip_info(self):
+        """
+        Fetch and display information about an IP address from VirusTotal.
+        Writes results to output/single-ip/{ip}.txt and returns the output string.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type != 'ip':
+            raise ValueError("display_ip_info can only be used with IP addresses.")
+        url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}"
+        request = urllib.request.Request(url, headers={'x-apikey': API_KEY, 'accept': 'application/json'})
+        try:
+            with urllib.request.urlopen(request) as response:
+                data = json.load(response)
+        except urllib.error.URLError as e:
+            print(f"Failed to retrieve data: {e}")
+            return
+
+        attr = data.get('data', {}).get('attributes', {})
+        stats = attr.get('last_analysis_stats', {})
+        domains = self.get_associated_domains()
+        lines = [
+            f"IP: {ioc_value}",
+            f"AS Owner: {attr.get('as_owner')}",
+            f"ASN: {attr.get('asn')}",
+            f"Continent: {attr.get('continent')}",
+            f"Country: {attr.get('country')}",
+            f"JARM: {attr.get('jarm')}",
+            f"Last Analysis Date: {attr.get('last_analysis_date')}",
+            f"Reputation Score: {attr.get('reputation')}",
+            f"Tags: {', '.join(attr.get('tags', []))}",
+            f"Votes: Harmless {attr.get('total_votes', {}).get('harmless', 0)}, Malicious {attr.get('total_votes', {}).get('malicious', 0)}",
+            "Last Analysis Stats:",
+            *(f"  {k.capitalize()}: {stats.get(k, 0)}" for k in ['harmless', 'malicious', 'suspicious', 'timeout', 'undetected']),
+            f"Last HTTPS Certificate Date: {attr.get('last_https_certificate_date')}",
+            f"Last Modification Date: {attr.get('last_modification_date')}",
+            f"Network: {attr.get('network')}",
+            f"Regional Internet Registry: {attr.get('regional_internet_registry')}",
+            f"WHOIS: {attr.get('whois')}",
+            f"WHOIS Date: {attr.get('whois_date')}",
+            f"Associated Domains: {', '.join(domains) if domains else 'No associated domains'}",
+            "-" * 40
+        ]
+        os.makedirs("output/single-ip", exist_ok=True)
+        with open(f"output/single-ip/{ioc_value}.txt", "w") as f:
+            f.write("\n".join(lines))
+        return "\n".join(lines)
+
+    def display_domain_info(self):
+        """
+        Fetch and display information about a domain from VirusTotal.
+        Writes results to output/single-domain/{domain}.txt and returns the output string.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type != 'domain':
+            raise ValueError("display_domain_info can only be used with domains.")
+        url = f"https://www.virustotal.com/api/v3/domains/{urllib.parse.quote(ioc_value)}"
+        request = urllib.request.Request(url, headers={'x-apikey': API_KEY, 'accept': 'application/json'})
+        try:
+            with urllib.request.urlopen(request) as response:
+                data = json.load(response)
+        except urllib.error.URLError as e:
+            print(f"Failed to retrieve data: {e}")
+            return
+
+        attr = data.get('data', {}).get('attributes', {})
+        stats = attr.get('last_analysis_stats', {})
+        lines = [
+            f"Domain: {ioc_value}",
+            f"Categories: {', '.join(attr.get('categories', {}).values())}",
+            f"Creation Date: {attr.get('creation_date')}",
+            f"Last Analysis Date: {attr.get('last_analysis_date')}",
+            "Last Analysis Stats:",
+            *(f"  {k.capitalize()}: {stats.get(k, 0)}" for k in ['harmless', 'malicious', 'suspicious', 'timeout', 'undetected']),
+            f"Last Modification Date: {attr.get('last_modification_date')}",
+            f"Reputation Score: {attr.get('reputation')}",
+            f"Tags: {', '.join(attr.get('tags', []))}",
+            f"Total Votes: Harmless - {attr.get('total_votes', {}).get('harmless', 0)}, Malicious - {attr.get('total_votes', {}).get('malicious', 0)}",
+            "-" * 40
+        ]
+        os.makedirs("output/single-domain", exist_ok=True)
+        with open(f"output/single-domain/{ioc_value}.txt", "w") as f:
+            f.write("\n".join(lines))
+        return "\n".join(lines)
+
+
+class AbuseIPDB(IOCValidatedModel):
+    
+    def check_ip(self):
+        """
+        Check an IP address against the AbuseIPDB API using the new endpoint.
+        Returns a dictionary with the results.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type != 'ip':
+            raise ValueError("check_ip can only be used with IP addresses.")
+        days = 90
+        url = f"https://www.abuseipdb.com/check/{ioc_value}/json?key={API_KEY}&days={days}"
+        headers = {
+            'Accept': 'application/json'
+        }
+        request = urllib.request.Request(url, headers=headers)
         try:
             with urllib.request.urlopen(request) as response:
                 data = json.load(response)
                 return data
         except urllib.error.URLError as e:
             print(f"Failed to retrieve data: {e}")
-            return None
+            return {}
 
-    def get_associated_domains(self, ip):
-        url = f"https://www.virustotal.com/api/v3/ip_addresses/{ip}/resolutions"
-        request = urllib.request.Request(url, headers={'x-apikey': API_KEY})
-        associated_domains = []
-        try:
-            with urllib.request.urlopen(request) as response:
-                data = json.load(response)
-                associated_domains.extend([res['attributes']['host_name'] for res in data.get('data', [])])
-        except urllib.error.URLError as e:
-            print(f"Failed to retrieve associated domains for {ip}: {e}")
-        return associated_domains
+class WHOIS_RDAP(IOCValidatedModel):
+    pass
 
-    def display_ip_info(self, ip):
-        url = API_URL_IP + urllib.parse.quote(ip)
-        data = self.fetch_data(url)
-        if not data:
-            return
-
-        attributes = data.get('data', {}).get('attributes', {})
-        last_analysis_stats = attributes.get('last_analysis_stats', {})
-        associated_domains = self.get_associated_domains(ip)
-
-        result = [
-            f"IP: {ip}",
-            f"AS Owner: {attributes.get('as_owner')}",
-            f"ASN: {attributes.get('asn')}",
-            f"Continent: {attributes.get('continent')}",
-            f"Country: {attributes.get('country')}",
-            f"JARM: {attributes.get('jarm')}",
-            f"Last Analysis Date: {attributes.get('last_analysis_date')}",
-            f"Reputation Score: {attributes.get('reputation')}",
-            f"Tags: {', '.join(attributes.get('tags', []))}",
-            f"Total Votes: Harmless - {attributes.get('total_votes', {}).get('harmless', 0)}, Malicious - {attributes.get('total_votes', {}).get('malicious', 0)}",
-            "Last Analysis Stats:",
-            f"  Harmless: {last_analysis_stats.get('harmless', 0)}",
-            f"  Malicious: {last_analysis_stats.get('malicious', 0)}",
-            f"  Suspicious: {last_analysis_stats.get('suspicious', 0)}",
-            f"  Timeout: {last_analysis_stats.get('timeout', 0)}",
-            f"  Undetected: {last_analysis_stats.get('undetected', 0)}",
-            f"Last HTTPS Certificate Date: {attributes.get('last_https_certificate_date')}",
-            f"Last Modification Date: {attributes.get('last_modification_date')}",
-            f"Network: {attributes.get('network')}",
-            f"Regional Internet Registry: {attributes.get('regional_internet_registry')}",
-            f"WHOIS: {attributes.get('whois')}",
-            f"WHOIS Date: {attributes.get('whois_date')}",
-            f"Associated Domains: {', '.join(associated_domains) if associated_domains else 'No associated domains'}",
-            "-" * 40
-        ]
-
-        # Ensure the output directory exists
-        output_dir = "output/single-ip"
-        os.makedirs(output_dir, exist_ok=True)
-
-        output_path = os.path.join(output_dir, f"{ip}.txt")
-        with open(output_path, 'w') as f:
-            f.write("\n".join(result))
-
-        return "\n".join(result)
-
-    def display_domain_info(self, domain):
-        url = API_URL_DOMAIN + urllib.parse.quote(domain)
-        data = self.fetch_data(url)
-        if not data:
-            return
-
-        attributes = data.get('data', {}).get('attributes', {})
-        last_analysis_stats = attributes.get('last_analysis_stats', {})
-        
-        result = [
-            f"Domain: {domain}",
-            f"Categories: {', '.join(attributes.get('categories', {}).values())}",
-            f"Creation Date: {attributes.get('creation_date')}",
-            f"Last Analysis Date: {attributes.get('last_analysis_date')}",
-            f"Last Analysis Stats:",
-            f"  Harmless: {last_analysis_stats.get('harmless', 0)}",
-            f"  Malicious: {last_analysis_stats.get('malicious', 0)}",
-            f"  Suspicious: {last_analysis_stats.get('suspicious', 0)}",
-            f"  Timeout: {last_analysis_stats.get('timeout', 0)}",
-            f"  Undetected: {last_analysis_stats.get('undetected', 0)}",
-            f"Last Modification Date: {attributes.get('last_modification_date')}",
-            f"Reputation Score: {attributes.get('reputation')}",
-            f"Tags: {', '.join(attributes.get('tags', []))}",
-            f"Total Votes: Harmless - {attributes.get('total_votes', {}).get('harmless', 0)}, Malicious - {attributes.get('total_votes', {}).get('malicious', 0)}",
-            "-" * 40
-        ]
-
-        # Ensure the output directory exists
-        output_dir = "output/single-domain"
-        os.makedirs(output_dir, exist_ok=True)
-
-        output_path = os.path.join(output_dir, f"{domain}.txt")
-        with open(output_path, 'w') as f:
-            f.write("\n".join(result))
-
-        print("\n".join(result))
-
-class AbuseIPDB_APIRequest():
-
-    def request(self):
-
-        return 0
-    
-class WHOIS_RDAP_APIRequest():
-
-    def request(self):
-
-        return 0
-
-class ShodanIO_APIRequest():
-
-    def request(self):
-
-        return 0
-    
-class TheatMiner_APIRequest():
-
-    def request(self):
-
-        return 0
-
-
+class ShodanIO(IOCValidatedModel):
+    pass
