@@ -1,14 +1,24 @@
 import os
 import json
+
+import requests
+import shodan
 import ipaddress
 import urllib.request
 import urllib.parse
-from datetime import datetime
-# from setting import API_KEY, API_URL_IP, API_URL_DOMAIN     # This is giving some issues rn, might restore later
+from pathlib import Path
+from typing import Tuple, Any
+
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
 
+current_dir = Path(__file__).resolve().parent
+dotenv_path = current_dir.parent.parent / '.env'
 
-def validate_ioc_value(value: str) -> str:
+load_dotenv(dotenv_path=dotenv_path)
+
+
+def validate_ioc_value(value: str) -> Tuple[Any, str]:
     """
     Validate if the input value is an IP address or a domain.
     Returns a tuple: (value, 'ip') or (value, 'domain').
@@ -16,10 +26,10 @@ def validate_ioc_value(value: str) -> str:
     """
     try:
         ipaddress.ip_address(value)
-        return (value, 'ip')  # It's a valid IP address
+        return value, 'ip'  # It's a valid IP address
     except ValueError:
         if "." in value:
-            return (value, 'domain')  # It's a domain
+            return value, 'domain'  # It's a domain
         raise ValueError("Invalid IOC. Must be a valid IP address or domain.")
 
 class IOCValidatedModel(BaseModel):
@@ -59,7 +69,7 @@ class VirusTotal(IOCValidatedModel):
         if ioc_type != 'ip':
             raise ValueError("Associated domains can only be retrieved for IP addresses.")
         url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}/resolutions"
-        request = urllib.request.Request(url, headers={'x-apikey': API_KEY})
+        request = urllib.request.Request(url, headers={'x-apikey': os.getenv("VT_API_KEY")})
         try:
             with urllib.request.urlopen(request) as response:
                 data = json.load(response)
@@ -77,7 +87,7 @@ class VirusTotal(IOCValidatedModel):
         if ioc_type != 'ip':
             raise ValueError("display_ip_info can only be used with IP addresses.")
         url = f"https://www.virustotal.com/api/v3/ip_addresses/{ioc_value}"
-        request = urllib.request.Request(url, headers={'x-apikey': API_KEY, 'accept': 'application/json'})
+        request = urllib.request.Request(url, headers={'x-apikey': os.getenv("VT_API_KEY"), 'accept': 'application/json'})
         try:
             with urllib.request.urlopen(request) as response:
                 data = json.load(response)
@@ -124,7 +134,7 @@ class VirusTotal(IOCValidatedModel):
         if ioc_type != 'domain':
             raise ValueError("display_domain_info can only be used with domains.")
         url = f"https://www.virustotal.com/api/v3/domains/{urllib.parse.quote(ioc_value)}"
-        request = urllib.request.Request(url, headers={'x-apikey': API_KEY, 'accept': 'application/json'})
+        request = urllib.request.Request(url, headers={'x-apikey': os.getenv("VT_API_KEY"), 'accept': 'application/json'})
         try:
             with urllib.request.urlopen(request) as response:
                 data = json.load(response)
@@ -152,7 +162,6 @@ class VirusTotal(IOCValidatedModel):
             f.write("\n".join(lines))
         return "\n".join(lines)
 
-
 class AbuseIPDB(IOCValidatedModel):
     
     def check_ip(self):
@@ -163,17 +172,17 @@ class AbuseIPDB(IOCValidatedModel):
         ioc_value, ioc_type = self.ioc
         if ioc_type != 'ip':
             raise ValueError("check_ip can only be used with IP addresses.")
-        days = 90
-        url = f"https://www.abuseipdb.com/check/{ioc_value}/json?key={API_KEY}&days={days}"
+        days=30
+        url = f"https://api.abuseipdb.com/api/v2/check"
         headers = {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Key': os.getenv('ABUSE_IP_DB_API_KEY')
         }
-        request = urllib.request.Request(url, headers=headers)
+        params = {'ipAddress': ioc_value, 'maxAgeInDays': days}
+        request = requests.get(url, params, headers=headers)
         try:
-            with urllib.request.urlopen(request) as response:
-                data = json.load(response)
-                return data
-        except urllib.error.URLError as e:
+            return request.json()['data']
+        except Exception as e:
             print(f"Failed to retrieve data: {e}")
             return {}
 
@@ -181,4 +190,38 @@ class WHOIS_RDAP(IOCValidatedModel):
     pass
 
 class ShodanIO(IOCValidatedModel):
-    pass
+
+    def search_data_in_shodan(self):
+        ioc_value, ioc_type = self.ioc
+        shodan_obj = shodan.Shodan(os.getenv('SHODAN_API_KEY'))
+
+        if ioc_type == 'ip':
+            ioc_info = shodan_obj.host(ioc_value)
+        else:
+            ioc_info = shodan_obj.search(ioc_value)
+
+        print(ioc_type, ioc_info)
+
+        try:
+            return ioc_info
+        except Exception as e:
+            print(f"Failed to retrieve data: {e}")
+            return {}
+
+
+# ------------------ TESTS ---------------------------
+## Virus Total:
+virustotal = VirusTotal(ioc='google.com')
+print(virustotal.display_domain_info())
+
+## AbuseIPDB
+abuseipdb = AbuseIPDB(ioc='8.8.8.8').check_ip()
+
+## Whois
+whois_arin = WHOIS_RDAP(ioc='8.8.8.8')
+
+## Shodan
+shodan_ip = ShodanIO(ioc="8.8.8.8").search_data_in_shodan()
+shodan_search = ShodanIO(ioc="google.com").search_data_in_shodan()
+
+# -----------------------------------------------------
