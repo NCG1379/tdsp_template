@@ -4,7 +4,7 @@ import ipaddress
 import urllib.request
 import urllib.parse
 from datetime import datetime
-from setting import API_KEY, API_URL_IP, API_URL_DOMAIN
+# from setting import API_KEY, API_URL_IP, API_URL_DOMAIN     # This is giving some issues rn, might restore later
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -153,11 +153,29 @@ class VirusTotal(IOCValidatedModel):
         return "\n".join(lines)
 
 
-newConnection = VirusTotal(ioc="google.com")
-print(newConnection.display_info())
-
 class AbuseIPDB(IOCValidatedModel):
-    pass
+    
+    def check_ip(self):
+        """
+        Check an IP address against the AbuseIPDB API using the new endpoint.
+        Returns a dictionary with the results.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type != 'ip':
+            raise ValueError("check_ip can only be used with IP addresses.")
+        days = 90
+        url = f"https://www.abuseipdb.com/check/{ioc_value}/json?key={API_KEY}&days={days}"
+        headers = {
+            'Accept': 'application/json'
+        }
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request) as response:
+                data = json.load(response)
+                return data
+        except urllib.error.URLError as e:
+            print(f"Failed to retrieve data: {e}")
+            return {}
 
 class WHOIS_RDAP(IOCValidatedModel):
     pass
