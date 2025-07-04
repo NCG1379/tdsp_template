@@ -1,5 +1,6 @@
 import pandas as pd
 import time
+import json
 import dvc
 import os
 
@@ -7,6 +8,17 @@ import scripts.data_acquisition.main as dtaq
 
 from time import localtime, strftime
 from IPython import get_ipython
+from dotenv import load_dotenv
+from pathlib import Path
+
+current_dir = Path(__file__).resolve().parent
+dotenv_path = current_dir.parent.parent / '.env'
+
+load_dotenv(dotenv_path=dotenv_path)
+
+
+with open("../credentials.json") as f:
+    os.environ["GDRIVE_CREDENTIALS_DATA"] = f.read()
 
 
 class DataGeneration(dtaq.IOCValidatedModel):
