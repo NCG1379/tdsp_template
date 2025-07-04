@@ -3,3 +3,5 @@
 env_vars*
 credentials*
 **/build/*
+output/single-ip/8.8.8.8.txt
+scripts/data_acquisition/setting.py
