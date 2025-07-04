@@ -216,12 +216,18 @@ print(virustotal.display_domain_info())
 
 ## AbuseIPDB
 abuseipdb = AbuseIPDB(ioc='8.8.8.8').check_ip()
+print(abuseipdb)
 
 ## Whois
 whois_arin = WHOIS_RDAP(ioc='8.8.8.8')
+print(whois_arin)
 
 ## Shodan
 shodan_ip = ShodanIO(ioc="8.8.8.8").search_data_in_shodan()
+print(shodan_ip)
+
 shodan_search = ShodanIO(ioc="google.com").search_data_in_shodan()
+print(shodan_search)
+
 
 # -----------------------------------------------------
