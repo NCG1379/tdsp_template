@@ -1,6 +1,5 @@
 import os
 import json
-
 import requests
 import shodan
 import ipaddress
@@ -8,7 +7,6 @@ import urllib.request
 import urllib.parse
 from pathlib import Path
 from typing import Tuple, Any
-
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
 
@@ -186,8 +184,28 @@ class AbuseIPDB(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return {}
 
+# TODO: Implement this class with the python library 'whois'
 class WHOIS_RDAP(IOCValidatedModel):
-    pass
+    
+    def get_info(self):
+        """
+        Fetch WHOIS information for the IOC.
+        Returns a dictionary with WHOIS data.
+        """
+        ioc_value, ioc_type = self.ioc
+        if ioc_type not in ['ip', 'domain']:
+            raise ValueError("WHOIS_RDAP can only be used with IP addresses or domains.")
+        
+        url = f"https://rdap.arin.net/registry/ip/{ioc_value}" if ioc_type == 'ip' else f"https://rdap.arin.net/registry/domain/{ioc_value}"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            print(f"Failed to retrieve WHOIS data: {e}")
+            return {}
+
+    
 
 class ShodanIO(IOCValidatedModel):
 
@@ -216,12 +234,17 @@ print(virustotal.display_domain_info())
 
 ## AbuseIPDB
 abuseipdb = AbuseIPDB(ioc='8.8.8.8').check_ip()
+print(abuseipdb)
 
 ## Whois
 whois_arin = WHOIS_RDAP(ioc='8.8.8.8')
+print(whois_arin.get_info())
+
 
 ## Shodan
 shodan_ip = ShodanIO(ioc="8.8.8.8").search_data_in_shodan()
 shodan_search = ShodanIO(ioc="google.com").search_data_in_shodan()
+print(shodan_ip)
+print(shodan_search)
 
 # -----------------------------------------------------
