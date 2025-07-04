@@ -1,0 +1,26 @@
+IP: 12.156.67.18
+AS Owner: ATT-INTERNET4
+ASN: 7018
+Continent: NA
+Country: US
+JARM: 15d3fd16d29d29d00042d43d000000fe02290512647416dcf0a400ccbc0b6b
+Last Analysis Date: 1751498093
+Reputation Score: -7
+Tags: 
+Votes: Harmless 0, Malicious 7
+Last Analysis Stats:
+  Harmless: 52
+  Malicious: 11
+  Suspicious: 3
+  Timeout: 0
+  Undetected: 28
+Last HTTPS Certificate Date: 1751498118
+Last Modification Date: 1751603062
+Network: 12.156.64.0/21
+Regional Internet Registry: ARIN
+WHOIS: AT&T Enterprises, LLC ATT (NET-12-0-0-0-1) 12.0.0.0 - 12.255.255.255
+SIKH GURDWARA-SJ SIKH-GUR92-67-16 (NET-12-156-67-16-1) 12.156.67.16 - 12.156.67.31
+
+WHOIS Date: 1750075145
+Associated Domains: www.sanjosegurdwara.org, sanjosegurdwara.org
+----------------------------------------

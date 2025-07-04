@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 
 import requests
@@ -187,7 +188,26 @@ class AbuseIPDB(IOCValidatedModel):
             return {}
 
 class WHOIS_RDAP(IOCValidatedModel):
-    pass
+
+    def get_whois_data(self):
+
+        ioc_value, ioc_type = self.ioc
+        try:
+            response = requests.get(f"https://rdap.arin.net/registry/ip/{ioc_value}")
+            if response.status_code == 200:
+                data = response.json()
+                name = data.get("name", "N/A")
+                cidr = data.get("cidr0", {}).get("cidr", "N/A")
+                ip_range = data.get("startAddress", "N/A") + " - " + data.get("endAddress", "N/A")
+                return {
+                    "Organization": name,
+                    "CIDR": cidr,
+                    "Range": ip_range,
+                }
+        except Exception as e:
+            return {"Error": f"Whois error: {e}"}
+        return {"Error": f"Whois error {response.status_code}"}
+    
 
 class ShodanIO(IOCValidatedModel):
 
@@ -196,11 +216,17 @@ class ShodanIO(IOCValidatedModel):
         shodan_obj = shodan.Shodan(os.getenv('SHODAN_API_KEY'))
 
         if ioc_type == 'ip':
-            ioc_info = shodan_obj.host(ioc_value)
+            try:
+                ioc_info = shodan_obj.host(ioc_value)
+            except shodan.exception.APIError:
+                return {}
         else:
-            ioc_info = shodan_obj.search(ioc_value)
+            try:
+                ioc_info = shodan_obj.search(ioc_value)
+            except shodan.exception.APIError:
+                return {}
 
-        print(ioc_type, ioc_info)
+        # print(ioc_type, ioc_info)
 
         try:
             return ioc_info
@@ -208,7 +234,7 @@ class ShodanIO(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return {}
 
-
+"""
 # ------------------ TESTS ---------------------------
 ## Virus Total:
 virustotal = VirusTotal(ioc='google.com')
@@ -228,6 +254,6 @@ print(shodan_ip)
 
 shodan_search = ShodanIO(ioc="google.com").search_data_in_shodan()
 print(shodan_search)
-
+"""
 
 # -----------------------------------------------------
