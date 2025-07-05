@@ -1,0 +1,94 @@
+IP: 42.200.252.38
+AS Owner: HKT Limited
+ASN: 4760
+Continent: AS
+Country: HK
+JARM: None
+Last Analysis Date: 1751600507
+Reputation Score: 0
+Tags: 
+Votes: Harmless 0, Malicious 0
+Last Analysis Stats:
+  Harmless: 61
+  Malicious: 0
+  Suspicious: 0
+  Timeout: 0
+  Undetected: 33
+Last HTTPS Certificate Date: None
+Last Modification Date: 1751600563
+Network: 42.200.252.0/23
+Regional Internet Registry: APNIC
+WHOIS: inetnum: 42.200.128.0 - 42.200.255.255
+netname: HKT-BIA
+descr: Hong Kong Telecommunications (HKT) Limited Business Internet
+country: HK
+admin-c: TA66-AP
+tech-c: TA66-AP
+abuse-c: AP706-AP
+status: ALLOCATED NON-PORTABLE
+mnt-by: MAINT-HK-PCCW-BIA-CS
+mnt-irt: IRT-PCCW-BIA-HK
+last-modified: 2021-01-27T13:23:08Z
+source: APNIC
+irt: IRT-PCCW-BIA-HK
+address: PO Box 9896 GPO
+e-mail: noc@imsbiz.com
+abuse-mailbox: noc@imsbiz.com
+admin-c: TA66-AP
+tech-c: TA66-AP
+auth: # Filtered
+remarks: noc@imsbiz.com
+remarks: noc@imsbiz.com was validated on 2025-03-28
+mnt-by: MAINT-HK-PCCW-BIA
+last-modified: 2025-03-28T04:57:38Z
+source: APNIC
+role: ABUSE PCCWBIAHK
+country: ZZ
+address: PO Box 9896 GPO
+phone: +000000000
+e-mail: noc@imsbiz.com
+admin-c: TA66-AP
+tech-c: TA66-AP
+nic-hdl: AP706-AP
+remarks: Generated from irt object IRT-PCCW-BIA-HK
+remarks: noc@imsbiz.com was validated on 2025-03-28
+abuse-mailbox: noc@imsbiz.com
+mnt-by: APNIC-ABUSE
+last-modified: 2025-03-28T04:58:15Z
+source: APNIC
+role: TECHNICAL ADMINISTRATORS
+address: HKT Limited
+address: PO Box 9896 GPO
+phone: +852-2883-5151
+country: HK
+e-mail: noc@imsbiz.com
+admin-c: NOC18-AP
+admin-c: WC109-AP
+tech-c: NOC18-AP
+tech-c: WC109-AP
+nic-hdl: TA66-AP
+notify: noc@imsbiz.com
+mnt-by: MAINT-HK-PCCW-BIA
+last-modified: 2016-07-15T04:03:30Z
+source: APNIC
+route: 42.200.224.0/19
+descr: PCCW IMSBiz route object
+origin: AS4515
+mnt-by: MAINT-HK-PCCW-BIA
+mnt-routes: MAINT-HK-PCCW-BIA
+last-modified: 2011-03-22T05:30:03Z
+source: APNIC
+route: 42.200.224.0/19
+origin: AS4760
+descr: PCCW IMS Ltd (PCCW Business Internet Access)
+ 26/F, PCCW TOWER
+ TAIKOO PLACE
+ 979 KINGS ROAD
+ QUARRY BAY, HONG KONG
+mnt-by: MAINT-HK-PCCW-BIA
+last-modified: 2020-06-12T06:22:25Z
+source: APNIC
+
+WHOIS Date: 1751600561
+Associated Domains: device-c26e8d7e-dbf3-41a1-bd6f-0de3a6c5ee4d.remotewd.com, 42-200-252-38.static.imsbiz.com, hinon.myds.me
+----------------------------------------
