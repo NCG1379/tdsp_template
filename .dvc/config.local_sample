@@ -1,0 +1,3 @@
+['remote "storage"']
+    url = gdrive://$DRIVEID 
+

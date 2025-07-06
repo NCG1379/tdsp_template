@@ -3,6 +3,12 @@
 env_vars*
 credentials*
 **/build/*
+output/single-ip/
 output/single-ip/8.8.8.8.txt
 scripts/data_acquisition/setting.py
 .env_sample
+src\nombre_paquete\training\data
+preload_env.py
+credentials.json
+.dvc\config.local
+.dvc\config
