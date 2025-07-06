@@ -16,11 +16,6 @@ dotenv_path = current_dir.parent.parent / '.env'
 
 load_dotenv(dotenv_path=dotenv_path)
 
-
-with open("credentials.json") as f:
-    os.environ["GDRIVE_CREDENTIALS_DATA"] = f.read()
-
-
 try:
     from ..data_acquisition import dtaq_main as dtaq
 except NameError:
