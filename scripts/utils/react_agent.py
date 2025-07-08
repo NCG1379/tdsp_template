@@ -41,7 +41,7 @@ def get_shodan_data(ioc: str) -> str:
     return shodan
 
 
-tools = [get_vt_data]
+tools = [get_vt_data, get_abuseipdb_data, get_whois_data, get_shodan_data()]
 
 llm = ChatOpenAI(model="gpt-4.1-nano", api_key=os.getenv("OPENAI_KEY"))
 llm_with_tools = llm.bind_tools(tools)
