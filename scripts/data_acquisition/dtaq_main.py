@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import requests
 import shodan
@@ -185,7 +184,7 @@ class AbuseIPDB(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return {}
 
-# TODO: Implement this class with the python library 'whois'
+
 class WHOIS_RDAP(IOCValidatedModel):
    
     def get_info(self):
@@ -208,7 +207,9 @@ class WHOIS_RDAP(IOCValidatedModel):
 
 
 class ShodanIO(IOCValidatedModel):
-
+    """
+    Fetch and display information about a domain or ip from Shodan.
+    """
     def search_data_in_shodan(self):
         ioc_value, ioc_type = self.ioc
         shodan_obj = shodan.Shodan(os.getenv('SHODAN_API_KEY'))
@@ -224,36 +225,8 @@ class ShodanIO(IOCValidatedModel):
             except shodan.exception.APIError:
                 return {}
 
-        # print(ioc_type, ioc_info)
-
         try:
             return ioc_info
         except Exception as e:
             print(f"Failed to retrieve data: {e}")
             return {}
-
-"""
-# ------------------ TESTS ---------------------------
-## Virus Total:
-virustotal = VirusTotal(ioc='google.com')
-print(virustotal.display_domain_info())
-
-## AbuseIPDB
-abuseipdb = AbuseIPDB(ioc='8.8.8.8').check_ip()
-print(abuseipdb)
-
-## Whois
-whois_arin = WHOIS_RDAP(ioc='8.8.8.8')
-print(whois_arin.get_info())
-
-## Shodan
-shodan_ip = ShodanIO(ioc="8.8.8.8").search_data_in_shodan()
-print(shodan_ip)
-
-shodan_search = ShodanIO(ioc="google.com").search_data_in_shodan()
-print(shodan_ip)
-print(shodan_search)
-"""
-
-
-# -----------------------------------------------------
