@@ -23,7 +23,12 @@ class AgentState(TypedDict):
 def get_vt_data(ioc: str) -> str:
     """Get data from VT associated to an IP or Domain."""
     virustotal = VirusTotal(ioc=ioc)
-    return virustotal.display_domain_info()
+    try:
+        return virustotal.display_domain_info()
+    except Exception as e:
+        print(e)
+        return virustotal.display_ip_info()
+
 
 def get_abuseipdb_data(ioc: str) -> dict:
     """Get data from AbuseIPDB associated to an IP."""
@@ -41,7 +46,7 @@ def get_shodan_data(ioc: str) -> str:
     return shodan
 
 
-tools = [get_vt_data, get_abuseipdb_data, get_whois_data, get_shodan_data()]
+tools = [get_vt_data, get_abuseipdb_data, get_whois_data, get_shodan_data]
 
 llm = ChatOpenAI(model="gpt-4.1-nano", api_key=os.getenv("OPENAI_KEY"))
 llm_with_tools = llm.bind_tools(tools)

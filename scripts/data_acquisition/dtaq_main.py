@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Tuple, Any
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
+from scripts.utils.mongo_handler import *
 
 current_dir = Path(__file__).resolve().parent
 dotenv_path = current_dir.parent.parent / '.env'
@@ -93,6 +94,8 @@ class VirusTotal(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return
 
+        insert_docs_to_db([data], 'VirusTotal')
+
         attr = data.get('data', {}).get('attributes', {})
         stats = attr.get('last_analysis_stats', {})
         domains = self.get_associated_domains()
@@ -140,6 +143,8 @@ class VirusTotal(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return
 
+        insert_docs_to_db([data], 'VirusTotal')
+
         attr = data.get('data', {}).get('attributes', {})
         stats = attr.get('last_analysis_stats', {})
         lines = [
@@ -179,7 +184,9 @@ class AbuseIPDB(IOCValidatedModel):
         params = {'ipAddress': ioc_value, 'maxAgeInDays': days}
         request = requests.get(url, params, headers=headers)
         try:
-            return request.json()['data']
+            data = request.json()['data']
+            insert_docs_to_db([data], 'AbuseIPDB')
+            return data
         except Exception as e:
             print(f"Failed to retrieve data: {e}")
             return {}
@@ -200,7 +207,9 @@ class WHOIS_RDAP(IOCValidatedModel):
         try:
             response = requests.get(url)
             response.raise_for_status()
-            return response.json()
+            data = response.json()
+            insert_docs_to_db([data], 'whois')
+            return data
         except requests.RequestException as e:
             print(f"Failed to retrieve WHOIS data: {e}")
             return {}
@@ -226,6 +235,7 @@ class ShodanIO(IOCValidatedModel):
                 return {}
 
         try:
+            insert_docs_to_db([ioc_info], 'Shodan')
             return ioc_info
         except Exception as e:
             print(f"Failed to retrieve data: {e}")
