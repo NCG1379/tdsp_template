@@ -1,0 +1,103 @@
+IP: 124.93.12.184
+AS Owner: CHINA UNICOM China169 Backbone
+ASN: 4837
+Continent: AS
+Country: CN
+JARM: None
+Last Analysis Date: 1750973542
+Reputation Score: -6
+Tags: 
+Votes: Harmless 0, Malicious 6
+Last Analysis Stats:
+  Harmless: 53
+  Malicious: 9
+  Suspicious: 2
+  Timeout: 0
+  Undetected: 30
+Last HTTPS Certificate Date: None
+Last Modification Date: 1751603080
+Network: 124.88.0.0/13
+Regional Internet Registry: APNIC
+WHOIS: inetnum: 124.92.0.0 - 124.95.255.255
+netname: UNICOM-LN
+descr: China Unicom Liaoning province network
+descr: China Unicom
+country: CN
+admin-c: CH1302-AP
+tech-c: GZ84-AP
+abuse-c: AC1718-AP
+status: ALLOCATED PORTABLE
+remarks: --------------------------------------------------------
+remarks: To report network abuse, please contact mnt-irt
+remarks: For troubleshooting, please contact tech-c and admin-c
+remarks: Report invalid contact via www.apnic.net/invalidcontact
+remarks: --------------------------------------------------------
+mnt-by: APNIC-HM
+mnt-lower: MAINT-CNCGROUP-LN
+mnt-routes: MAINT-CNCGROUP-RR
+mnt-irt: IRT-CU-CN
+last-modified: 2023-10-21T03:35:35Z
+source: APNIC
+irt: IRT-CU-CN
+address: No.21,Financial Street
+address: Beijing,100033
+address: P.R.China
+e-mail: zhaoyz3@chinaunicom.cn
+abuse-mailbox: zhaoyz3@chinaunicom.cn
+admin-c: CH1302-AP
+tech-c: CH1302-AP
+auth: # Filtered
+remarks: zhaoyz3@chinaunicom.cn was validated on 2025-02-24
+mnt-by: MAINT-CNCGROUP
+last-modified: 2025-02-24T06:16:57Z
+source: APNIC
+role: ABUSE CUCN
+country: ZZ
+address: No.21,Financial Street
+address: Beijing,100033
+address: P.R.China
+phone: +000000000
+e-mail: zhaoyz3@chinaunicom.cn
+admin-c: CH1302-AP
+tech-c: CH1302-AP
+nic-hdl: AC1718-AP
+remarks: Generated from irt object IRT-CU-CN
+remarks: zhaoyz3@chinaunicom.cn was validated on 2025-02-24
+abuse-mailbox: zhaoyz3@chinaunicom.cn
+mnt-by: APNIC-ABUSE
+last-modified: 2025-02-24T06:17:45Z
+source: APNIC
+person: ChinaUnicom Hostmaster
+nic-hdl: CH1302-AP
+e-mail: hqs-ipabuse@chinaunicom.cn
+address: No.21,Jin-Rong Street
+address: Beijing,100033
+address: P.R.China
+phone: +86-10-66259764
+fax-no: +86-10-66259764
+country: CN
+mnt-by: MAINT-CNCGROUP
+last-modified: 2017-08-17T06:13:16Z
+source: APNIC
+person: Guangyu Zhan
+nic-hdl: GZ84-AP
+e-mail: hqs-ipabuse@chinaunicom.cn
+address: DATA Communication Bureau of Liaoning Province,China
+address: 38 Lianhe Road,Dadong District Shenyang 110044,China
+phone: +86-24-22800809
+fax-no: +86-24-22800077
+country: CN
+mnt-by: MAINT-CNCGROUP-LN
+last-modified: 2017-08-17T06:16:09Z
+source: APNIC
+route: 124.93.0.0/16
+descr: China Unicom China169 Network
+country: CN
+origin: AS4837
+mnt-by: MAINT-CNCGROUP-RR
+last-modified: 2017-05-05T07:18:03Z
+source: APNIC
+
+WHOIS Date: 1750765956
+Associated Domains: No associated domains
+----------------------------------------

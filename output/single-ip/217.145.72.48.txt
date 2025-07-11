@@ -1,0 +1,66 @@
+IP: 217.145.72.48
+AS Owner: Association YORKHOST
+ASN: 199415
+Continent: EU
+Country: FR
+JARM: 29d29d00029d29d00042d42d0000005d86ccb1a0567e012264097a0315d7a7
+Last Analysis Date: 1751383675
+Reputation Score: -2
+Tags: 
+Votes: Harmless 0, Malicious 2
+Last Analysis Stats:
+  Harmless: 58
+  Malicious: 2
+  Suspicious: 2
+  Timeout: 0
+  Undetected: 32
+Last HTTPS Certificate Date: 1721081668
+Last Modification Date: 1751603088
+Network: 217.145.72.0/24
+Regional Internet Registry: RIPE NCC
+WHOIS: inetnum: 217.145.72.0 - 217.145.72.255
+netname: NET-217-145-72-0-24
+country: FR
+geofeed: https://geofeed.ipxo.com/geofeed.txt
+org: ORG-YA169-RIPE
+admin-c: YA57995-RIPE
+tech-c: YA57995-RIPE
+abuse-c: YA57995-RIPE
+status: ASSIGNED PA
+remarks: End User Organization
+mnt-by: IPXO-MNT
+created: 2024-06-28T18:25:57Z
+last-modified: 2024-06-28T18:25:57Z
+source: RIPE
+organisation: ORG-YA169-RIPE
+org-name: Private Customer
+org-type: OTHER
+remarks: End User Organization
+address: Private Residence
+country: FR
+abuse-c: YA57995-RIPE
+mnt-ref: IPXO-MNT
+mnt-by: IPXO-MNT
+created: 2023-06-01T11:42:06Z
+last-modified: 2023-06-16T10:47:20Z
+source: RIPE # Filtered
+role: Private Customer
+address: Private Residence
+nic-hdl: YA57995-RIPE
+remarks: End User Organization
+abuse-mailbox: abuse@ipxo.com
+mnt-by: IPXO-MNT
+created: 2023-06-01T11:42:06Z
+last-modified: 2023-06-16T10:47:20Z
+source: RIPE # Filtered
+route: 217.145.64.0/20
+descr: GCI Com City Road
+origin: AS8851
+mnt-by: MNT-GCICOM
+created: 2010-11-28T10:21:15Z
+last-modified: 2010-11-28T10:21:15Z
+source: RIPE # Filtered
+
+WHOIS Date: 1730115635
+Associated Domains: homodermy48.abacinate217.beattheconcepts.com, game01.obtey.fr, obtey.fr, panel.obtey.fr
+----------------------------------------

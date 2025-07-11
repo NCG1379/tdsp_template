@@ -1,3 +1,15 @@
 shodan==1.31.0
 python-dotenv~=1.1.1
 pydantic~=2.11.7
+langgraph==0.5.1
+langchain-openai==0.3.27
+graphviz==0.21
+# pygraphviz==1.11
+pandas~=2.3.1
+typing_extensions~=4.14.1
+langchain-core~=0.3.68
+requests~=2.32.4
+dvc~=3.61.0
+typing_extensions~=4.14.1
+jupyterlab==4.4.4
+pymongo==4.13.2

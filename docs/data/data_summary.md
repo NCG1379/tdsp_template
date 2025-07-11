@@ -1,26 +1,34 @@
 # Reporte de Datos
 
-Este documento contiene los resultados del análisis exploratorio de datos.
-
 ## Resumen general de los datos
 
-En esta sección se presenta un resumen general de los datos. Se describe el número total de observaciones, variables, el tipo de variables, la presencia de valores faltantes y la distribución de las variables.
+En la sección de scripts\eda se presenta el análisis de las APIs utilizadas para la extracción de información, donde se extrae la data para ser cargada a una base de datos de manera exploratoria sobre algunas de las consultas generadas contra las APIs de las plataformas que se van a probar en este proyecto, se generan comentarios respecto a los datos:
+
+- Las APIs traen datos limpios, estructurados, con tipos de datos válidos y bien codificados, tienen valores en blanco "" o NaN que representan que esa característica no posee información, pero que a nivel de información no es un error a considerar. Se puede realizar la limpieza del dato antes de ser pasado al LLM para evitar que se procese data no relevante.
+- La catidad de datos disponible en estas APIs no es fácil de calcular porque se están agregando datos continuamente, las variables son descritas en docs\data\data_dictionary.md y scripts\eda\eda.ipynb, se describe con detalle las variables y la cantidad de información que trae con una consulta, las APIs cuentan con documentación para entender los datos y los tipos de campos que se pueden consultar adicional a lo presentado en el proyecto.
 
 ## Resumen de calidad de los datos
 
-En esta sección se presenta un resumen de la calidad de los datos. Se describe la cantidad y porcentaje de valores faltantes, valores extremos, errores y duplicados. También se muestran las acciones tomadas para abordar estos problemas.
+En la revisión de la información extraída desde la API se tienen los siguientes valores respecto a la catidad de características respecto al tipo de dato:
+
+- VirusTotal: dtypes: bool(1), float64(5), int64(14), object(458)
+- AbuseIPDB: dtypes: bool(3), int64(4), object(8)
+- Whois: dtypes: object(19)
+- Shodan.io: dtypes: int64(1), object(2)
+
+Dentro de los reportes en scripts\eda\data se evidencia que hay consultas de IPs o Dominios que no se encuentran en alguna de las plataformas, en ese caso la consulta toma un valor {} indicando que no hubo datos para generar el JSON.
 
 ## Variable objetivo
 
-En esta sección se describe la variable objetivo. Se muestra la distribución de la variable y se presentan gráficos que permiten entender mejor su comportamiento.
+Para el contexto del LLM se debe compartir los datos con información interpretable en el caso de la data que viene de la API, se eliminan las variables que son NaN o vacías y ese texto sería el resultado del análisis. Lo que se espera es el razonamiento del LLM para interpretar y dar un nivel de riesgo al Dominios o IP que se analiza.
 
 ## Variables individuales
 
-En esta sección se presenta un análisis detallado de cada variable individual. Se muestran estadísticas descriptivas, gráficos de distribución y de relación con la variable objetivo (si aplica). Además, se describen posibles transformaciones que se pueden aplicar a la variable.
+Son descritas en docs\data\data_dictionary.md donde se presenta uno a uno los campos que sirven para la generación del template de input hacia el LLM.
 
 ## Ranking de variables
 
-En esta sección se presenta un ranking de las variables más importantes para predecir la variable objetivo. Se utilizan técnicas como la correlación, el análisis de componentes principales (PCA) o la importancia de las variables en un modelo de aprendizaje automático.
+La información de las APIs es relevante para el contexto y análisis de la información, correlacionando los datos, por lo tanto, la información desde VirusTotal y AbuseIPDB respecto a los reportes de Dominios o IPs maliciosas es muy importante para analizar ese nivel de riesgo, así como, la información de Whois o Shodan.io que ayuda a entender el contexto y desde donde se está generando el posible ataque informático.
 
 ## Relación entre variables explicativas y variable objetivo
 
