@@ -12,14 +12,14 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
 
 try:
-    from ..utils import mongo_handler
+    from ..utils.mongo_handler import *
 except NameError:
-    from scripts.utils import mongo_handler
+    from scripts.utils.mongo_handler import *
 except ImportError:
     # Agrega el directorio del módulo al sys.path
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
 
-    from mongo_handler import *
+    from scripts.utils.mongo_handler import *
 
 
 current_dir = Path(__file__).resolve().parent
