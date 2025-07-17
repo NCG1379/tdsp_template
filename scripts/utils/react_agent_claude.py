@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 try:
     from ..data_acquisition import dtaq_main as dtaq
     from ..utils.output_parser import extract_and_parse_json
+    from ..utils.mongo_handler import insert_docs_to_db
 except NameError:
     from scripts.data_acquisition import dtaq_main as dtaq
     from scripts.utils.output_parser import extract_and_parse_json
