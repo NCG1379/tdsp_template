@@ -9,9 +9,21 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from scripts.data_acquisition.dtaq_main import VirusTotal, AbuseIPDB, WHOIS_RDAP, ShodanIO
-from scripts.utils.output_parser import extract_and_parse_json
-from scripts.utils.mongo_handler import insert_docs_to_db
+try:
+    from ..data_acquisition import dtaq_main as dtaq
+    from ..utils.output_parser import extract_and_parse_json
+    from ..utils.mongo_handler import insert_docs_to_db
+except NameError:
+    from scripts.data_acquisition import dtaq_main as dtaq
+    from scripts.utils.output_parser import extract_and_parse_json
+    from scripts.utils.mongo_handler import insert_docs_to_db
+except ImportError:
+    # Agrega el directorio del módulo al sys.path
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data_acquisition')))
+
+    from dtaq_main import VirusTotal, AbuseIPDB, WHOIS_RDAP, ShodanIO
+    from output_parser import extract_and_parse_json
+    from mongo_handler import insert_docs_to_db
 
 current_dir = Path(__file__).resolve().parent
 dotenv_path = current_dir.parent.parent / '.env'
