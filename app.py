@@ -26,3 +26,16 @@ async def get_claude_response(ioc: ApiInput) -> ApiOutput:
 @app.post("/api/v1/deepseek")
 async def get_deepseek_response(ioc: ApiInput) -> ApiOutput:
     return ApiOutput(response=react_deepseek(ioc))
+
+@app.post("/api/v1/virustotal")
+async def get_vt_response(ioc: ApiInput) -> ApiOutput:
+    return ApiOutput(response={"ioc": ioc, "call": ""})
+
+@app.post("/api/v1/whois")
+async def get_whois_response(ioc: ApiInput) -> ApiOutput:
+    return ApiOutput(response={"ioc": ioc, "call": "whois"})
+
+@app.post("/api/v1/abuseipdb")
+async def get_abuseipdb_response(ioc: ApiInput) -> ApiOutput:
+    return ApiOutput(response={"ioc": ioc, "call": "abuse ipdb"})
+
