@@ -1,4 +1,4 @@
-FROM python:3.14.0b4-bullseye
+FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
@@ -10,4 +10,5 @@ COPY . .
 
 EXPOSE 8000
 
-RUN ["fastapi", "dev app.py"]
+# CMD ["fastapi", "dev", "app.py"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
