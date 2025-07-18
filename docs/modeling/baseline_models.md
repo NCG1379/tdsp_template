@@ -9,6 +9,8 @@ Los resultados de las consultas se integran mediante un template en LangChain, q
 
 Para superar limitaciones del agente de IA, se propone realizar el entrenamiento de Fine-Tuning usando LoRa, con Gemma 2B, el proceso se aplicaría al encoder. Este ajuste fino se realiza utilizando un dataset etiquetado donde cada ejemplo se asocia a un nivel de riesgo categórico: riesgo bajo Score (de 0 a 25), medio Score (de 26 a 60), alto Score (de 61 a 75) o crítico Score (de 75 a 100). El modelo entrenado pretende mejorar la manera de analizar el riesgo de los IoCs, mejorando la coherencia, interpretabilidad y precisión del Score y permitiendo recomendaciones más ajustadas. Esta solución, al estar basada en un LLM propio, disminuye la dependencia de APIs externas para la evaluación de riesgo.
 
+![Descripción de la imagen](docs\modeling\images\18e275db-1afb-499d-b99b-774880d81699 (1).png)
+
 # Variables de entrada
 
 * Indicador: IP o dominio bajo investigación.
