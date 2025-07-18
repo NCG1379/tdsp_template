@@ -3,13 +3,29 @@ from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition, ToolNode
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
-from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from scripts.data_acquisition.dtaq_main import VirusTotal, AbuseIPDB, WHOIS_RDAP, ShodanIO
+try:
+    from ..data_acquisition import dtaq_main as dtaq
+    from ..utils.output_parser import extract_and_parse_json
+    from ..utils.mongo_handler import insert_docs_to_db
+except NameError:
+    from scripts.data_acquisition import dtaq_main as dtaq
+    from scripts.utils.output_parser import extract_and_parse_json
+    from scripts.utils.mongo_handler import insert_docs_to_db
+except ImportError:
+    # Agrega el directorio del módulo al sys.path
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data_acquisition')))
+
+    from dtaq_main import VirusTotal, AbuseIPDB, WHOIS_RDAP, ShodanIO
+    from output_parser import extract_and_parse_json
+    from mongo_handler import insert_docs_to_db
+
+
 
 current_dir = Path(__file__).resolve().parent
 dotenv_path = current_dir.parent.parent / '.env'
@@ -48,14 +64,15 @@ def get_shodan_data(ioc: str) -> str:
 
 tools = [get_vt_data, get_abuseipdb_data, get_whois_data, get_shodan_data]
 
-llm = ChatOpenAI(model="gpt-4.1-nano", api_key=os.getenv("OPENAI_KEY"))
+llm = ChatAnthropic(model_name="claude-3-7-sonnet-latest", api_key=os.getenv("ANTHROPIC_KEY"))
 llm_with_tools = llm.bind_tools(tools)
 
 
 def assistant_node(state: AgentState):
     messages = state["messages"]
     system_message = SystemMessage(
-        content="You are a cybersecurity researcher. You can use the provided tools to gather information. One way communication.")
+        content="You are a cybersecurity researcher. You can use the provided tools to gather information. "
+                "One way communication. Retrieve one json-like file with 3 items: Summary, Recommendation, Score (0-100)")
 
     response = llm_with_tools.invoke([system_message] + messages)
 
@@ -84,9 +101,42 @@ try:
 except Exception as e:
     print(f"Could not export graph as PNG. Ensure 'pygraphviz' and 'graphviz' system package are installed. Error: {e}")
 
-messages_input = [HumanMessage(content="What is the reputation of 179.43.176.38?")]
-final_state = graph.invoke({"messages": messages_input})
 
-print("\nFinal Conversation:")
-for m in final_state['messages']:
-    m.pretty_print()
+def react_claude(ioc):
+    messages_input = [
+        HumanMessage(content=f"Summary report highlighting risk factors of: {ioc}. Include a risk score between 0-100")]
+    final_state = graph.invoke({"messages": messages_input})
+
+    print("\nFinal Conversation:")
+    for m in final_state['messages']:
+        m.pretty_print()
+
+    try:
+        ioc_ = str(ioc).replace(".", "_")
+    except AttributeError:
+        print("IOC wrong type: ", type(ioc))
+        ioc_ = ioc
+
+    output_filename = f"output/conversation_log_claude_{ioc_}.txt"
+
+    with open(output_filename, "w") as f:
+        import sys
+        original_stdout = sys.stdout
+        sys.stdout = f
+
+        for m in final_state['messages']:
+            m.pretty_print()
+            f.write("\n---\n")
+
+        sys.stdout = original_stdout
+
+    final_answer = extract_and_parse_json(final_state["messages"][-1].content)
+    print(final_answer)
+    insert_docs_to_db(docs=final_answer, collection="respuestas_finales")
+
+    print(f"Conversation successfully saved to {output_filename}")
+    return final_answer
+
+
+if __name__ == "__main__":
+    final_ans = react_claude(ioc="94.124.15.40")

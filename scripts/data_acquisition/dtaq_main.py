@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import requests
 import shodan
@@ -9,7 +10,17 @@ from pathlib import Path
 from typing import Tuple, Any
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
-from scripts.utils.mongo_handler import *
+
+try:
+    from ..utils.mongo_handler import *
+except NameError:
+    from scripts.utils.mongo_handler import *
+except ImportError:
+    # Agrega el directorio del módulo al sys.path
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
+
+    from scripts.utils.mongo_handler import *
+
 
 current_dir = Path(__file__).resolve().parent
 dotenv_path = current_dir.parent.parent / '.env'
