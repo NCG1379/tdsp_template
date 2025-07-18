@@ -91,7 +91,7 @@ Calidad del mensaje JSON: Se verifica la presentación, completitud y estructura
 
 La solución baseline provee una automatización robusta para la agregación de inteligencia sobre IoCs, facilitando análisis rápidos y respuestas accionables para los equipos de ciberseguridad. Sin embargo, integrar un modelo Gemma 2B ajustado vía fine-tuning —basado en etiquetas de riesgo categóricas— permitiría que el sistema no solo recopile y resuma la información, sino que clasifique amenazas y proponga respuestas de manera proactiva y alineada con la experiencia humana. Técnicamente, esto se implementa mediante la reentrenación del encoder con ejemplos históricos etiquetados, mejorando la precisión, autonomía y adaptabilidad ante nuevas amenazas.
 
-Referencias
+## Referencias
 https://github.com/amxn167/RiskScope
 
 https://langchain-ai.github.io/langgraph/agents/agents/
