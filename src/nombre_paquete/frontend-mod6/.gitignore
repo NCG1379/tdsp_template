@@ -1,18 +1,3 @@
-**/*__pycache__/*
-*.env
-env_vars*
-credentials*
-**/build/*
-output/single-ip/
-output/single-ip/8.8.8.8.txt
-scripts/data_acquisition/setting.py
-.env_sample
-src\nombre_paquete\training\data
-preload_env.py
-credentials.json
-.dvc\config.local
-.dvc\config
-
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
