@@ -8,6 +8,15 @@ services:
     environment:
       - MONGO_URI=mongodb://db:27017/langchainAgent
 
+  frontend:
+    build:
+      context: .
+      dockerfile: DockerfileFront
+    ports:
+      - "3000:3000"
+    depends_on:
+      - app
+
   db:
     image: mongo:8.0.11
     ports:
