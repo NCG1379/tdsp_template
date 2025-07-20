@@ -11,15 +11,7 @@ from typing import Tuple, Any
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, field_validator
 
-try:
-    from ..utils.mongo_handler import *
-except NameError:
-    from scripts.utils.mongo_handler import *
-except ImportError:
-    # Agrega el directorio del módulo al sys.path
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'utils')))
-
-    from scripts.utils.mongo_handler import *
+from scripts.utils.mongo_handler import *
 
 
 current_dir = Path(__file__).resolve().parent
@@ -105,6 +97,7 @@ class VirusTotal(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return
 
+        data["ioc"] = ioc_value
         insert_docs_to_db([data], 'VirusTotal')
 
         attr = data.get('data', {}).get('attributes', {})
@@ -154,6 +147,7 @@ class VirusTotal(IOCValidatedModel):
             print(f"Failed to retrieve data: {e}")
             return
 
+        data["ioc"] = ioc_value
         insert_docs_to_db([data], 'VirusTotal')
 
         attr = data.get('data', {}).get('attributes', {})
@@ -196,6 +190,7 @@ class AbuseIPDB(IOCValidatedModel):
         request = requests.get(url, params, headers=headers)
         try:
             data = request.json()['data']
+            data["ioc"] = ioc_value
             insert_docs_to_db([data], 'AbuseIPDB')
             return data
         except Exception as e:
@@ -219,6 +214,7 @@ class WHOIS_RDAP(IOCValidatedModel):
             response = requests.get(url)
             response.raise_for_status()
             data = response.json()
+            data["ioc"] = ioc_value
             insert_docs_to_db([data], 'whois')
             return data
         except requests.RequestException as e:
@@ -246,6 +242,7 @@ class ShodanIO(IOCValidatedModel):
                 return {}
 
         try:
+            ioc_info["ioc"] = ioc_value
             insert_docs_to_db([ioc_info], 'Shodan')
             return ioc_info
         except Exception as e:
