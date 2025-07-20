@@ -126,7 +126,7 @@ def react_deepseek(ioc):
         print("IOC wrong type: ", type(ioc))
         ioc_ = ioc
 
-    output_filename = f"output/conversation_log_claude_{ioc_}.txt"
+    output_filename = f"output/conversation_log_deepseek_{ioc_}.txt"
 
     with open(output_filename, "w") as f:
         import sys
