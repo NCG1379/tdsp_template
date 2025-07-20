@@ -1,8 +1,8 @@
 from scripts.utils.react_agent_openai import react_openai
-# from scripts.utils.react_agent_deepseek import run_agent as react_deepseek
 from scripts.utils.react_agent_claude import react_claude
-
 from scripts.utils.react_agent_deepseek import react_deepseek
+
+from scripts.preprocessing.data_summary import vt_summary, whois_summary, abuseipdb_summary
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -29,13 +29,13 @@ async def get_deepseek_response(ioc: ApiInput) -> ApiOutput:
 
 @app.post("/api/v1/virustotal")
 async def get_vt_response(ioc: ApiInput) -> ApiOutput:
-    return ApiOutput(response={"ioc": ioc, "call": ""})
+    return ApiOutput(response=vt_summary(ioc))
 
 @app.post("/api/v1/whois")
 async def get_whois_response(ioc: ApiInput) -> ApiOutput:
-    return ApiOutput(response={"ioc": ioc, "call": "whois"})
+    return ApiOutput(response=whois_summary(ioc))
 
 @app.post("/api/v1/abuseipdb")
 async def get_abuseipdb_response(ioc: ApiInput) -> ApiOutput:
-    return ApiOutput(response={"ioc": ioc, "call": "abuse ipdb"})
+    return ApiOutput(response=abuseipdb_summary(ioc))
 
