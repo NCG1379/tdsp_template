@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import pandas as pd
 import os
 
-mongo_uri = os.getenv('MONGO_URI', 'mongodb://localhost:27017/langchainAgent')
+mongo_uri = os.getenv('MONGO_URI', 'mongodb://db:27017/langchainAgent')
 
 client = MongoClient(mongo_uri.replace("langchainAgent", ""))
 db = 'langchainAgent'
