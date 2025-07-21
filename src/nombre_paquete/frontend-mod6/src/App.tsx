@@ -23,8 +23,9 @@ type MoreData = {
 
 const IPInputBox: React.FC<{ onCheck: () => void }> = ({ onCheck }) => (
   <div>
-    <div>
-      <input placeholder="Enter IP" />
+      <p id='ip-input-box-label-text'>Welcome! Please enter a valid IP address to begin</p>
+    <div id='ip-input-box'>
+      <input placeholder="IP Address" />
       <button onClick={onCheck}>Check IP</button>
     </div>
   </div>

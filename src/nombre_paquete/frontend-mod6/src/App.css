@@ -45,6 +45,22 @@ button:hover:enabled {
   background-color: #003f8c;
 }
 
+
+#ip-input-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+
+#ip-input-box-label-text {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  font-family: 'Times New Roman', Times, serif
+
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
