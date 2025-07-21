@@ -81,9 +81,15 @@ const App: React.FC = () => {
     setLoading(true);
     try {
       const [res1, res2, res3] = await Promise.all([
+<<<<<<< Updated upstream
         fetch('https://api.ipify.org?format=json').then(r => r.json()),
         fetch('https://api.ipify.org?format=json').then(r => r.json()),
         fetch('https://api.ipify.org?format=json').then(r => r.json()),
+=======
+        fetch("http://localhost:8000/api/v1/deepseek?source=shodan").then(r => r.json()),
+        fetch("http://localhost:8000/api/v1/deepseek?source=greynoise").then(r => r.json()),
+        fetch("http://localhost:8000/api/v1/deepseek?source=ipinfo").then(r => r.json()),
+>>>>>>> Stashed changes
       ]);
 
       const data: MoreData = {
