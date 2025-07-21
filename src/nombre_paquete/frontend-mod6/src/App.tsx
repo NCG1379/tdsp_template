@@ -105,8 +105,8 @@ const App: React.FC = () => {
   const fetchMoreData = async () => {
     setLoading(true);
     try {
-      // Make API call to /api/v1/virustotal
-      const response = await fetch('http://localhost:8000/api/v1/virustotal', {
+      // Fetch VirusTotal data
+      const vtRes = await fetch('http://localhost:8000/api/v1/virustotal', {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -114,11 +114,36 @@ const App: React.FC = () => {
         },
         body: JSON.stringify({ ioc: '115.58.133.36' }),
       });
+      const vtResult = await vtRes.json();
+      const vt = vtResult.response.data;
 
-      const result = await response.json();
+      // Fetch Whois data
+      const whoisRes = await fetch('http://localhost:8000/api/v1/whois', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ioc: '115.58.133.36' }),
+      });
+      const whoisResult = await whoisRes.json();
+      const whois = whoisResult.response.data;
 
-      // Extract and beautify the data before setting state
-      const vt = result.response.data;
+      // Fetch AbuseIPDB data
+      const abuseRes = await fetch('http://localhost:8000/api/v1/abuseipdb', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ioc: '115.58.133.36' }),
+      });
+      
+      const abuseResult = await abuseRes.json();
+      const abuse = abuseResult.response;
+
+
+      // Beautify and set state
       const beautifiedData: MoreData = {
         VirusTotal: {
           Malicious: vt.attributes.last_analysis_stats.malicious,
@@ -127,14 +152,23 @@ const App: React.FC = () => {
           Harmless: vt.attributes.last_analysis_stats.harmless,
           Timeout: vt.attributes.last_analysis_stats.timeout,
         },
-        whois: { Message: "Unknown" },
-        AbuseIPDB: { Message: "Not fetched" }
+        whois: {},
+        AbuseIPDB: {
+          Whitelisted: abuse.isWhitelisted ? "Yes" : "No",
+          ConfidenceScore: abuse.abuseConfidenceScore,
+          Country: abuse.countryCode,
+          UsageType: abuse.usageType,
+          Domain: abuse.domain,
+          Tor: abuse.isTor ? "Yes" : "No",
+          TotalReports: abuse.totalReports,
+          LastReported: abuse.lastReportedAt
+        }
       };
 
-      setMoreData(beautifiedData);
-      setShowMore(true);
-    } catch (err) {
-      console.error('Error fetching VirusTotal data:', err);
+    setMoreData(beautifiedData);
+    setShowMore(true);
+  } catch (err) {
+      console.error('Error fetching more data:', err);
     } finally {
       setLoading(false);
     }
