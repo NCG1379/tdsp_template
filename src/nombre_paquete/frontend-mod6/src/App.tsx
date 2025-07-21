@@ -8,7 +8,6 @@ import VirusTotalLogo from './assets/VirusTotalLogo.png';
 import WhoisLogo from './assets/WhoISLogo.png';
 import AbuseIPDBLogo from './assets/AbuseIPDBLogo.png';
 
-
 type IPData = {
   claude: any;
   openai: any;
@@ -21,88 +20,65 @@ type MoreData = {
   AbuseIPDB: any;
 };
 
-const IPInputBox: React.FC<{ onCheck: () => void }> = ({ onCheck }) => (
-  <div>
-    <p id='ip-input-box-label-text'>Welcome! Please enter a valid IP address to begin</p>
-    <div id='ip-input-box'>
-      <input placeholder="IP Address" />
-      <button onClick={onCheck}>Check IP</button>
-    </div>
-  </div>
-);
-
-const ResultCard: React.FC<{ title: string; content: any; logo?: string }> = ({ title, content, logo }) => {
-  const parsed =
-    typeof content === 'string'
-      ? [['Text', content]]
-      : Object.entries(content);
-
-  return (
-    <div className="result-card">
-      <div className="card-header">
-        {logo && <img src={logo} alt={`${title} logo`} className="card-logo" />}
-        <h3>{title}</h3>
-      </div>
-      <div className="card-content">
-        {parsed.map(([key, value], idx) => (
-          <div key={idx} className="card-row">
-            <span className="card-key">{key}</span>
-            <span className="card-value">
-              {Array.isArray(value) ? value.join(', ') : value?.toString()}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const IPResultsGrid: React.FC<{ data: IPData | null }> = ({ data }) => {
-  if (!data) return null;
-  return (
-    <div className="grid">
-      <ResultCard title="Claude" content={data.claude} logo={ClaudeLogo} />
-      <ResultCard title="Openai" content={data.openai} logo={OpenAILogo} />
-      <ResultCard title="DeepSeek" content={data.deepseek} logo={DeepSeekLogo} />
-    </div>
-  );
-};
-
-const MoreInfoGrid: React.FC<{ data: MoreData }> = ({ data }) => (
-  <div className="grid">
-    <ResultCard title="VirusTotal" content={data.VirusTotal} logo={VirusTotalLogo} />
-    <ResultCard title="Whois" content={data.whois} logo={WhoisLogo} />
-    <ResultCard title="AbuseIPDB" content={data.AbuseIPDB} logo={AbuseIPDBLogo} />
-  </div>
-);
-
 const App: React.FC = () => {
   const [result, setResult] = useState<IPData | null>(null);
   const [loading, setLoading] = useState(false);
   const [moreData, setMoreData] = useState<MoreData | null>(null);
   const [showMore, setShowMore] = useState(false);
+  const [ip, setIp] = useState<string>("");
 
-  const fetchData = () => {
-    const mocked: IPData = {
-      claude: { "response": { "Summary": "The IP address 115.58.133.36 is located in China (Zhengzhou, Henan province) and is part of the China Unicom network (AS4837). It has several risk indicators: 11 security vendors on VirusTotal have flagged it as malicious, it has an openai confidence score of 5 with 2 abuse reports from 1 distinct user, and the most recent report was on July 20, 2025. VirusTotal scanning reveals an FTP service running on port 21 with failed login attempts. The IP belongs to a fixed-line ISP and is associated with the hostname 'hn.kd.ny.adsl'. Chinese IP addresses, particularly those with detected malicious activity, are frequently used in scanning and exploitation attempts against global targets.", "Recommendation": "This IP address should be monitored and potentially blocked if not required for legitimate business operations. Implement firewall rules to restrict access from this IP, especially to FTP services and other sensitive ports. If you observe traffic from this IP in your logs, investigate for potential unauthorized access attempts. Consider adding this IP to your threat intelligence feeds for continued monitoring. Since it's a China-based IP with known malicious indicators, apply the principle of least privilege if you must interact with this network range.", "Score": 62 } },
+  const fetchData = async () => {
+    if (!ip) return;
+    try {
+      // Fetch Claude
+      const claudeRes = await fetch('http://localhost:8000/api/v1/claude', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ioc: ip }),
+      });
+      const claudeResult = await claudeRes.json();
 
-      openai: { "response": { "Summary": "The IP address 115.58.133.36 is associated with China Unicom Henan province network, located in Zhengzhou, China. The IP has a low reputation score and recent malicious activity reports, although mostly benign with some suspicious and undetected flags. It operates on port 21, indicating potential for FTP-related services, which could be exploited if not properly secured.", "Recommendation": "Implement strict security measures such as disabling anonymous FTP access, applying firewalls, monitoring for unusual activity, and conducting regular security audits. Consider blocking or restricting access to this IP if unnecessary, and keep systems updated to mitigate potential threats.", "Score": 40 } },
+      // Fetch OpenAI
+      const openaiRes = await fetch('http://localhost:8000/api/v1/openai', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ioc: ip }),
+      });
+      const openaiResult = await openaiRes.json();
 
+      // Fetch DeepSeek
+      const deepseekRes = await fetch('http://localhost:8000/api/v1/deepseek', {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ioc: ip }),
+      });
+      const deepseekResult = await deepseekRes.json();
 
-      deepseek: { "response": { "Summary": "The IP address 115.58.133.36 is associated with China Unicom in Henan, China. It is part of a regional backbone network and has a low reputation score with no significant malicious activity reported. However, it is listed with some reports of suspicious activity and has an abuse confidence score of 5. The IP runs on a fixed line ISP network and has been reported a few times, with recent activity indicating potential vulnerabilities, especially given the open FTP port at 21 which shows failed login attempts.", "Recommendation": "Monitor network activity associated with this IP closely. Ensure all services, especially FTP, are properly secured with strong authentication and encryption options. Conduct regular vulnerability assessments and consider blocking or restricting access if no legitimate use is identified. Keep software and hardware updated to prevent exploitation.", "Score": 42 } },
-    };
+      const extractedData = {
+        claude: claudeResult.response,
+        openai: openaiResult.response,
+        deepseek: deepseekResult.response,
+      };
 
-    // Extract the 'response' field to get to the actual data
-    const extractedData = {
-      deepseek: mocked.deepseek.response,
-      claude: mocked.claude.response,
-      openai: mocked.openai.response,
+      setResult(extractedData);
+      setShowMore(false);
+      setMoreData(null);
+    } catch (err) {
+      console.error('Error fetching main IP data:', err);
     }
-
-    setResult(extractedData);
   };
 
   const fetchMoreData = async () => {
+    if (!ip) return;
     setLoading(true);
     try {
       // Fetch VirusTotal data
@@ -112,7 +88,7 @@ const App: React.FC = () => {
           'accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ioc: '115.58.133.36' }),
+        body: JSON.stringify({ ioc: ip }),
       });
       const vtResult = await vtRes.json();
       const vt = vtResult.response.data;
@@ -124,7 +100,7 @@ const App: React.FC = () => {
           'accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ioc: '115.58.133.36' }),
+        body: JSON.stringify({ ioc: ip }),
       });
       const whoisResult = await whoisRes.json();
       const whois = whoisResult.response.data;
@@ -136,12 +112,10 @@ const App: React.FC = () => {
           'accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ioc: '115.58.133.36' }),
+        body: JSON.stringify({ ioc: ip }),
       });
-      
       const abuseResult = await abuseRes.json();
       const abuse = abuseResult.response;
-
 
       // Beautify and set state
       const beautifiedData: MoreData = {
@@ -151,8 +125,9 @@ const App: React.FC = () => {
           Undetected: vt.attributes.last_analysis_stats.undetected,
           Harmless: vt.attributes.last_analysis_stats.harmless,
           Timeout: vt.attributes.last_analysis_stats.timeout,
+          Link: vt.links.self
         },
-        whois: {},
+        whois: whois,
         AbuseIPDB: {
           Whitelisted: abuse.isWhitelisted ? "Yes" : "No",
           ConfidenceScore: abuse.abuseConfidenceScore,
@@ -165,14 +140,82 @@ const App: React.FC = () => {
         }
       };
 
-    setMoreData(beautifiedData);
-    setShowMore(true);
-  } catch (err) {
+      setMoreData(beautifiedData);
+      setShowMore(true);
+    } catch (err) {
       console.error('Error fetching more data:', err);
     } finally {
       setLoading(false);
     }
   };
+
+  const IPInputBox: React.FC<{ onCheck: () => void }> = ({ onCheck }) => (
+    <div>
+      <p id='ip-input-box-label-text'>Welcome! Please enter a valid IP address to begin</p>
+      <div id='ip-input-box'>
+        <input
+          placeholder="IP Address"
+          value={ip}
+          onChange={e => setIp(e.target.value)}
+        />
+        <button onClick={onCheck} disabled={!ip}>Check IP</button>
+      </div>
+    </div>
+  );
+
+  const ResultCard: React.FC<{ title: string; content: any; logo?: string }> = ({ title, content, logo }) => {
+    
+    // If content is empty, null, or undefined, show default message
+    const isEmpty =
+      content === undefined ||
+      content === null ||
+      (typeof content === 'object' && Object.keys(content).length === 0) ||
+      (typeof content === 'string' && content.trim() === '');
+
+    const parsed = isEmpty
+      ? [['Text', 'This resource was not used in the data adquisition pipeline used by the models']]
+      : typeof content === 'string'
+        ? [['Text', content]]
+        : Object.entries(content);
+
+    return (
+      <div className="result-card">
+        <div className="card-header">
+          {logo && <img src={logo} alt={`${title} logo`} className="card-logo" />}
+          <h3>{title}</h3>
+        </div>
+        <div className="card-content">
+          {parsed.map(([key, value], idx) => (
+            <div key={idx} className="card-row">
+              <span className="card-key">{key}</span>
+              <span className="card-value">
+                {Array.isArray(value) ? value.join(', ') : value?.toString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const IPResultsGrid: React.FC<{ data: IPData | null }> = ({ data }) => {
+    if (!data) return null;
+    return (
+      <div className="grid">
+        <ResultCard title="Claude" content={data.claude} logo={ClaudeLogo} />
+        <ResultCard title="Openai" content={data.openai} logo={OpenAILogo} />
+        <ResultCard title="DeepSeek" content={data.deepseek} logo={DeepSeekLogo} />
+      </div>
+    );
+  };
+
+  const MoreInfoGrid: React.FC<{ data: MoreData }> = ({ data }) => (
+    <div className="grid">
+      <ResultCard title="VirusTotal" content={data.VirusTotal} logo={VirusTotalLogo} />
+      <ResultCard title="Whois" content={data.whois} logo={WhoisLogo} />
+      <ResultCard title="AbuseIPDB" content={data.AbuseIPDB} logo={AbuseIPDBLogo} />
+    </div>
+  );
 
   return (
     <div>
@@ -182,7 +225,7 @@ const App: React.FC = () => {
 
       {result && (
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <button onClick={fetchMoreData} disabled={loading}>
+          <button onClick={fetchMoreData} disabled={loading || !ip}>
             {loading ? 'Loading...' : 'Show More Info'}
           </button>
         </div>
