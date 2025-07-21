@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import Header from './Header';
 
 type IPData = {
   claude: any;
@@ -15,8 +16,10 @@ type MoreData = {
 
 const IPInputBox: React.FC<{ onCheck: () => void }> = ({ onCheck }) => (
   <div>
-    <input placeholder="Enter IP" />
-    <button onClick={onCheck}>Check IP</button>
+    <div>
+      <input placeholder="Enter IP" />
+      <button onClick={onCheck}>Check IP</button>
+    </div>
   </div>
 );
 
@@ -170,7 +173,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h2>RiskScope - IP Threat Intelligence Checker</h2>
+      <Header />
       <IPInputBox onCheck={fetchData} />
       <IPResultsGrid data={result} />
 
