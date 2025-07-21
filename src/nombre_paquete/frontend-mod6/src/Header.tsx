@@ -8,7 +8,7 @@ const Header: React.FC = () => (
       <img src={LogoUnal} alt="Logo" className="logo-rect" />
     </div>
     <div className="header-content">
-      <h1 className="tool-name">RiskScope - IP Threat Intelligence Checker</h1>
+      <h1 className="tool-name">Proyecto Mod 6 MLDS</h1>
       <div className="dev-names">
         <span>José</span>
         <span>Diego</span>
