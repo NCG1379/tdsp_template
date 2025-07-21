@@ -92,3 +92,15 @@ button:hover:enabled {
   word-break: break-word;
   text-align: left;
 }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+}

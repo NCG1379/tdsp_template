@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
 import Header from './Header';
+import OpenAILogo from './assets/OpenaiLogo.png';
+import ClaudeLogo from './assets/ClaudeLogo.png';
+import DeepSeekLogo from './assets/DeepSeekLogo.png';
 
 type IPData = {
   claude: any;
@@ -23,7 +26,7 @@ const IPInputBox: React.FC<{ onCheck: () => void }> = ({ onCheck }) => (
   </div>
 );
 
-const ResultCard: React.FC<{ title: string; content: any }> = ({ title, content }) => {
+const ResultCard: React.FC<{ title: string; content: any; logo?: string }> = ({ title, content, logo }) => {
   const parsed =
     typeof content === 'string'
       ? [['Text', content]]
@@ -31,7 +34,10 @@ const ResultCard: React.FC<{ title: string; content: any }> = ({ title, content 
 
   return (
     <div className="result-card">
-      <h3>{title}</h3>
+      <div className="card-header">
+        {logo && <img src={logo} alt={`${title} logo`} className="card-logo" />}
+        <h3>{title}</h3>
+      </div>
       <div className="card-content">
         {parsed.map(([key, value], idx) => (
           <div key={idx} className="card-row">
@@ -50,9 +56,9 @@ const IPResultsGrid: React.FC<{ data: IPData | null }> = ({ data }) => {
   if (!data) return null;
   return (
     <div className="grid">
-      <ResultCard title="Claude" content={data.claude} />
-      <ResultCard title="Openai" content={data.openai} />
-      <ResultCard title="DeepSeek" content={data.deepseek} />
+      <ResultCard title="Claude" content={data.claude} logo={ClaudeLogo} />
+      <ResultCard title="Openai" content={data.openai} logo={OpenAILogo} />
+      <ResultCard title="DeepSeek" content={data.deepseek} logo={DeepSeekLogo} />
     </div>
   );
 };
