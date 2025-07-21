@@ -4,6 +4,10 @@ import Header from './Header';
 import OpenAILogo from './assets/OpenaiLogo.png';
 import ClaudeLogo from './assets/ClaudeLogo.png';
 import DeepSeekLogo from './assets/DeepSeekLogo.png';
+import VirusTotalLogo from './assets/VirusTotalLogo.png';
+import WhoisLogo from './assets/WhoISLogo.png';
+import AbuseIPDBLogo from './assets/AbuseIPDBLogo.png';
+
 
 type IPData = {
   claude: any;
@@ -65,9 +69,9 @@ const IPResultsGrid: React.FC<{ data: IPData | null }> = ({ data }) => {
 
 const MoreInfoGrid: React.FC<{ data: MoreData }> = ({ data }) => (
   <div className="grid">
-    <ResultCard title="VirusTotal" content={data.VirusTotal} />
-    <ResultCard title="Whois" content={data.whois} />
-    <ResultCard title="AbuseIPDB" content={data.AbuseIPDB} />
+    <ResultCard title="VirusTotal" content={data.VirusTotal} logo={VirusTotalLogo} />
+    <ResultCard title="Whois" content={data.whois} logo={WhoisLogo} />
+    <ResultCard title="AbuseIPDB" content={data.AbuseIPDB} logo={AbuseIPDBLogo} />
   </div>
 );
 
