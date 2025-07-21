@@ -20,6 +20,20 @@ type MoreData = {
   AbuseIPDB: any;
 };
 
+const IPInputBox: React.FC<{ value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; onCheck: () => void }> = ({ value, onChange, onCheck }) => (
+  <div>
+    <p id='ip-input-box-label-text'>Welcome! Please enter a valid IP address to begin</p>
+    <div id='ip-input-box'>
+      <input
+        placeholder="IP Address"
+        value={value}
+        onChange={onChange}
+      />
+      <button onClick={onCheck} disabled={!value}>Check IP</button>
+    </div>
+  </div>
+);
+
 const App: React.FC = () => {
   const [result, setResult] = useState<IPData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -149,22 +163,10 @@ const App: React.FC = () => {
     }
   };
 
-  const IPInputBox: React.FC<{ onCheck: () => void }> = ({ onCheck }) => (
-    <div>
-      <p id='ip-input-box-label-text'>Welcome! Please enter a valid IP address to begin</p>
-      <div id='ip-input-box'>
-        <input
-          placeholder="IP Address"
-          value={ip}
-          onChange={e => setIp(e.target.value)}
-        />
-        <button onClick={onCheck} disabled={!ip}>Check IP</button>
-      </div>
-    </div>
-  );
+
 
   const ResultCard: React.FC<{ title: string; content: any; logo?: string }> = ({ title, content, logo }) => {
-    
+
     // If content is empty, null, or undefined, show default message
     const isEmpty =
       content === undefined ||
@@ -220,7 +222,7 @@ const App: React.FC = () => {
   return (
     <div>
       <Header />
-      <IPInputBox onCheck={fetchData} />
+      <IPInputBox value={ip} onChange={e => setIp(e.target.value)} onCheck={fetchData} />
       <IPResultsGrid data={result} />
 
       {result && (
