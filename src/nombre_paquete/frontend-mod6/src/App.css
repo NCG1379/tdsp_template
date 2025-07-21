@@ -58,6 +58,8 @@ button:hover:enabled {
   padding: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
 .result-card:hover {
@@ -88,5 +90,5 @@ button:hover:enabled {
   color: #333;
   max-width: 60%;
   word-break: break-word;
-  text-align: right;
+  text-align: left;
 }
