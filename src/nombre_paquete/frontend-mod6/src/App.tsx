@@ -41,53 +41,57 @@ const App: React.FC = () => {
   const [showMore, setShowMore] = useState(false);
   const [ip, setIp] = useState<string>("");
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     if (!ip) return;
+    setLoading(true);
     try {
-      // Fetch Claude
-      const claudeRes = await fetch('http://localhost:8000/api/v1/claude', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ioc: ip }),
-      });
-      const claudeResult = await claudeRes.json();
-
-      // Fetch OpenAI
-      const openaiRes = await fetch('http://localhost:8000/api/v1/openai', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ioc: ip }),
-      });
-      const openaiResult = await openaiRes.json();
-
-      // Fetch DeepSeek
-      const deepseekRes = await fetch('http://localhost:8000/api/v1/deepseek', {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ioc: ip }),
-      });
-      const deepseekResult = await deepseekRes.json();
-
+      // Call all APIs in parallel
+      const [claudeRes, openaiRes, deepseekRes] = await Promise.all([
+        fetch('http://localhost:8000/api/v1/claude', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ioc: ip }),
+        }),
+        fetch('http://localhost:8000/api/v1/openai', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ioc: ip }),
+        }),
+        fetch('http://localhost:8000/api/v1/deepseek', {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ioc: ip }),
+        }),
+      ]);
+  
+      const [claudeResult, openaiResult, deepseekResult] = await Promise.all([
+        claudeRes.json(),
+        openaiRes.json(),
+        deepseekRes.json(),
+      ]);
+  
       const extractedData = {
         claude: claudeResult.response,
         openai: openaiResult.response,
         deepseek: deepseekResult.response,
       };
-
+  
       setResult(extractedData);
       setShowMore(false);
       setMoreData(null);
     } catch (err) {
       console.error('Error fetching main IP data:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
