@@ -8,10 +8,10 @@ client = MongoClient(mongo_uri.replace("langchainAgent", ""))
 db = 'langchainAgent'
 
 
-def query_db(collection: str, query: dict, one_element=False):
+def query_db(collection: str, query: dict, filter: dict, one_element=False):
     collection = client.get_database(db).get_collection(collection)
     if one_element:
-        return list(collection.find(query, {"_id": 0}))
+        return list(collection.find(query, filter))
     return pd.DataFrame(list(collection.find(query, {"_id": 0})))
 
 def insert_docs_to_db(docs: list, collection: str):
