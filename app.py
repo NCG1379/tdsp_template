@@ -1,11 +1,14 @@
 from scripts.utils.react_agent_openai import react_openai
 from scripts.utils.react_agent_claude import react_claude
 from scripts.utils.react_agent_deepseek import react_deepseek
-
+from fastapi.middleware.cors import CORSMiddleware
 from scripts.preprocessing.data_summary import vt_summary, whois_summary, abuseipdb_summary
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+
+
+
 
 class ApiInput(BaseModel):
     ioc: str
@@ -14,6 +17,15 @@ class ApiOutput(BaseModel):
     response: dict
 
 app = FastAPI()
+
+# Allow CORS for frontend on localhost
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/api/v1/openai")
 async def get_open_ai_response(ioc: ApiInput) -> ApiOutput:
