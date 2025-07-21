@@ -41,7 +41,7 @@ const App: React.FC = () => {
   const [showMore, setShowMore] = useState(false);
   const [ip, setIp] = useState<string>("");
 
-    const fetchData = async () => {
+  const fetchData = async () => {
     if (!ip) return;
     setLoading(true);
     try {
@@ -72,19 +72,19 @@ const App: React.FC = () => {
           body: JSON.stringify({ ioc: ip }),
         }),
       ]);
-  
+
       const [claudeResult, openaiResult, deepseekResult] = await Promise.all([
         claudeRes.json(),
         openaiRes.json(),
         deepseekRes.json(),
       ]);
-  
+
       const extractedData = {
         claude: claudeResult.response,
         openai: openaiResult.response,
         deepseek: deepseekResult.response,
       };
-  
+
       setResult(extractedData);
       setShowMore(false);
       setMoreData(null);
@@ -227,7 +227,11 @@ const App: React.FC = () => {
     <div>
       <Header />
       <IPInputBox value={ip} onChange={e => setIp(e.target.value)} onCheck={fetchData} />
-      <IPResultsGrid data={result} />
+      {loading ? (
+        <div className="spinner" />
+      ) : (
+        <IPResultsGrid data={result} />
+      )}
 
       {result && (
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
