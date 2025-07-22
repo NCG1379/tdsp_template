@@ -57,7 +57,8 @@ def assistant_node(state: AgentState):
     messages = state["messages"]
     system_message = SystemMessage(
         content="You are a cybersecurity researcher. You can use the provided tools to gather information. "
-                "One way communication. Retrieve one json-like file with 3 items: Summary, Recommendation, Score (0-100)")
+                "One way communication. Retrieve one json-like file with 3 items: "
+                "Summary (50-80 words long), Recommendation (40-60 words long), Score (0-100)")
 
     response = llm_with_tools.invoke([system_message] + messages)
 
