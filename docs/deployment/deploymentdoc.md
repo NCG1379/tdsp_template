@@ -24,7 +24,9 @@
 
 ### **Diagrama de arquitectura:**
 
-    ![Arquitectura](https://github.com/NCG1379/tdsp_template/blob/097dbb3ac1463f5527c73a19bf28a875b57ffb64/docs/deployment/images/Arquitectura_App.png)
+Se presenta la arquitectura de los componentes soportados en docker y el despliegue que se realiza de los diferentes componentes de frontend y backend para el funcionamiento de la aplicación:
+
+    ![arquitectura](https://github.com/NCG1379/tdsp_template/blob/40831251e409be83fe8f1e37dbfbd873c068e8e3/docs/deployment/images/Arquitectura_App.png)
 
 ### Código de despliegue
 
