@@ -2,11 +2,11 @@
 
 ## Infraestructura
 
-- **Nombre del modelo:**: Agentes de IA para Análisis de Indicadores de Compromiso
+### **Nombre del modelo:**: Agentes de IA para Análisis de Indicadores de Compromiso
 
-- **Plataforma de despliegue:**: Despliegue mediante Docker
+### **Plataforma de despliegue:**: Despliegue mediante Docker
 
-- **Requisitos técnicos:**:
+### **Requisitos técnicos:**:
 
 * La versión de python usada se define dentro del ***Dockerfile*** con el cargue de la imagen `FROM python:3.12-slim-bullseye`.
 * Todos los prerequisitos son instalados dentro de la imagen, implementando la instalación del ***full_requirements.txt***, el cual también está dentro del ***Dockerfile***.
@@ -14,7 +14,7 @@
 
     ![Imagen](https://github.com/NCG1379/tdsp_template/blob/953b31f997ef3ab56fc373288040d93af5b8a4da/docs/deployment/images/size_consume_docker.png)
 
-- **Requisitos de seguridad:**:
+### **Requisitos de seguridad:**:
 
 * En un despliegue en producción el único puerto expuesto a internet debe ser el puerto 3000.
 * En esta entrega no se tiene la sanitización de los datos de entrada. Sin embargo, los frameworks usados y el uso de pydantic no permite que se pueda pasar cualquier tipo de información o ejecución de código malicioso.
@@ -24,11 +24,11 @@
 
 - **Diagrama de arquitectura:** (imagen que muestra la arquitectura del sistema que se utilizará para desplegar el modelo)
 
-    ![Texto alternativo](docs\deployment\images\Arquitectura1.png)
+    ![Arquitectura](https://github.com/NCG1379/tdsp_template/blob/097dbb3ac1463f5527c73a19bf28a875b57ffb64/docs/deployment/images/Arquitectura_App.png)
 
-## Código de despliegue
+### Código de despliegue
 
-- **Archivos principales:**: 
+#### **Archivos principales:**: 
 
     * **Docker Backend**: carga el app.py que expone todas las APIs que tiene el backend disponible.
 
@@ -38,7 +38,7 @@
 
     * **Docker MongoDB**: documento único que ejecuta todos los dockerfiles y crea los componentes antes mencionados.
 
-- **Rutas de acceso a los archivos:**:
+#### **Rutas de acceso a los archivos:**:
 
     * **Docker Backend**: `tdsp_template\Dockerfile`
 
@@ -48,7 +48,7 @@
 
     * **Docker MongoDB**: `tdsp_template\docker-compose.yml`
 
-- **Variables de entorno:**:
+### **Variables de entorno:**:
 
     * **Variables de entorno:**: Se debe tener las llaves de los servicios que se van a consumir para poder correr el projecto, se debe dejar en un archivo `.env` y llamar este archivo en los scripts que requieran cargar una variable de entorno.
 
@@ -67,9 +67,9 @@
         ANTHROPIC_KEY=""
         ~~~
 
-## Documentación del despliegue
+### Documentación del despliegue
 
-- **Instrucciones de instalación:** 
+#### **Instrucciones de instalación:** 
 
 El despliegue del proyecto se realiza desde un docker compose [herramienta para el despliegue de multiples contenedores desde un solo comando](https://learn.microsoft.com/es-es/azure/ai-services/containers/docker-compose-recipe) usando el docker-compose.yml, los pasos de despliegue se describen a continuación:
 
@@ -81,7 +81,7 @@ El despliegue del proyecto se realiza desde un docker compose [herramienta para 
 
     Se debería observar lo siguiente al correr el comando dentro del directorio del proyecto como se muestra en la imagen:
 
-    ![Texto alternativo]("D:\03_Development\03_MLOps_DL\Project\Branch_dev\tdsp_template\docs\deployment\images\docker_compose_command.png")
+    ![docker-compose](https://github.com/NCG1379/tdsp_template/blob/097dbb3ac1463f5527c73a19bf28a875b57ffb64/docs/deployment/images/docker_compose_command.png)
 
 3. Se validan los servicios en ejecución:
 
@@ -92,19 +92,19 @@ El despliegue del proyecto se realiza desde un docker compose [herramienta para 
     3.3. En un terminal de comando pegar `curl -X POST http://localhost:8000/api/v1/virustotal -H "Content-Type: application/json" -d '{"ioc": "example.com"}'` -> Debe devolder `{"response":{"message":"Unknown"}}`, esto implica que la base de datos está corriendo correctamente.
 
 
-- **Instrucciones de uso:**
+### **Instrucciones de uso:**
 
 1. La página se puede visualizar al cargar el `http://localhost:3000`, se debe colocar la IP o Dominio que se desea consultar para poder validar la información y el resumen de los modelos usados:
 
     * El resultado de las consultas e información se presenta en la página web del frontend
 
-    ![Texto alternativo](docs\deployment\images\WebPage_Complete.png)
+    ![WebPage](https://github.com/NCG1379/tdsp_template/blob/097dbb3ac1463f5527c73a19bf28a875b57ffb64/docs/deployment/images/WebPage_Complete.png)
 
-- **Instrucciones de mantenimiento:**
+### **Instrucciones de mantenimiento:**
 
 * Las versiones de imagenes de los docker deben mantenerse actualizadas por seguridad y compatibilidad.
 * Las librerías usadas están soportadas en python 3.12, la migración a otra versión requiere revisión de compatibilidad.
 * El frontend en React se debe mantener actualizado para el uso de los componentes gráficos y funciones del framework.
 
-**Nota: en el momento el mantenimiento se genera a nivel de software de la aplicación, los modelos LLMs a nivel de mantenimiento son soportados por el fabricante.
+**Nota**: en el momento el mantenimiento se genera a nivel de software de la aplicación, los modelos LLMs a nivel de mantenimiento son soportados por el fabricante.
 
