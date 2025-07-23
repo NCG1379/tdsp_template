@@ -2,11 +2,11 @@
 
 ## Infraestructura
 
-### **Nombre del modelo:**: Agentes de IA para Análisis de Indicadores de Compromiso
+### **Nombre del modelo:** Agentes de IA para Análisis de Indicadores de Compromiso
 
-### **Plataforma de despliegue:**: Despliegue mediante Docker
+### **Plataforma de despliegue:** Despliegue mediante Docker
 
-### **Requisitos técnicos:**:
+### **Requisitos técnicos:**
 
 * La versión de python usada se define dentro del ***Dockerfile*** con el cargue de la imagen `FROM python:3.12-slim-bullseye`.
 * Todos los prerequisitos son instalados dentro de la imagen, implementando la instalación del ***full_requirements.txt***, el cual también está dentro del ***Dockerfile***.
@@ -14,7 +14,7 @@
 
     ![Imagen](https://github.com/NCG1379/tdsp_template/blob/953b31f997ef3ab56fc373288040d93af5b8a4da/docs/deployment/images/size_consume_docker.png)
 
-### **Requisitos de seguridad:**:
+### **Requisitos de seguridad:**
 
 * En un despliegue en producción el único puerto expuesto a internet debe ser el puerto 3000.
 * En esta entrega no se tiene la sanitización de los datos de entrada. Sin embargo, los frameworks usados y el uso de pydantic no permite que se pueda pasar cualquier tipo de información o ejecución de código malicioso.
@@ -28,7 +28,7 @@
 
 ### Código de despliegue
 
-#### **Archivos principales:**: 
+#### **Archivos principales:** 
 
     * **Docker Backend**: carga el app.py que expone todas las APIs que tiene el backend disponible.
 
@@ -38,7 +38,7 @@
 
     * **Docker MongoDB**: documento único que ejecuta todos los dockerfiles y crea los componentes antes mencionados.
 
-#### **Rutas de acceso a los archivos:**:
+#### **Rutas de acceso a los archivos:**
 
     * **Docker Backend**: `tdsp_template\Dockerfile`
 
@@ -48,7 +48,7 @@
 
     * **Docker MongoDB**: `tdsp_template\docker-compose.yml`
 
-### **Variables de entorno:**:
+### **Variables de entorno:**
 
     * **Variables de entorno:**: Se debe tener las llaves de los servicios que se van a consumir para poder correr el projecto, se debe dejar en un archivo `.env` y llamar este archivo en los scripts que requieran cargar una variable de entorno.
 
