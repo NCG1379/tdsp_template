@@ -75,7 +75,7 @@ El despliegue del proyecto se realiza desde un docker compose [herramienta para 
 
 1. Instalación de docker y docker compose [documentación del fabricante varía según sistema operativo](https://docs.docker.com/engine/install/).
 
-2. Instalado los componentes de docker se procede a correr el siguiente comando:
+2. Instalado los componentes de docker se procede a correr el siguiente comando, dentro del directorio principal del projecto:
 
     2.1. En linux: `sudo docker compose -f docker-compose.yml up --build`.
 
@@ -95,6 +95,8 @@ El despliegue del proyecto se realiza desde un docker compose [herramienta para 
 - **Instrucciones de uso:**
 
 1. La página se puede visualizar al cargar el `http://localhost:3000`, se debe colocar la IP o Dominio que se desea consultar para poder validar la información y el resumen de los modelos usados:
+
+    * El resultado de las consultas e información se presenta en la página web del frontend
 
     ![Texto alternativo](docs\deployment\images\WebPage_Complete.png)
 
