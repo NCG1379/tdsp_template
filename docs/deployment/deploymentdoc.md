@@ -8,6 +8,7 @@
 
 ### **Requisitos técnicos:**
 
+* La compatibilidad de la aplicación solo ha sido probada en sistemas basados en Linux, en Windows se tienen problemas de rutas heredadas para los scripts.
 * La versión de python usada se define dentro del ***Dockerfile*** con el cargue de la imagen `FROM python:3.12-slim-bullseye`.
 * Todos los prerequisitos son instalados dentro de la imagen, implementando la instalación del ***full_requirements.txt***, el cual también está dentro del ***Dockerfile***.
 * En hardware se requieren 6.1 GB para el despliegue y se debe tener en cuenta el consumo de la base de datos con cada consulta generada, al ser variable el tamaño de la data consultada en las fuentes de datos, el consumo en espacio en disco se debe monitorear.
