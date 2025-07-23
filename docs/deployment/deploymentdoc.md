@@ -22,7 +22,7 @@
 * Se recomienda el uso de un WAF/IDS/IPS para la protección de la aplicación de cara a internet.
 * El uso de variables de entorno y evitar subir el .env a repositorios públicos protege los key de los servicios consumidos por API (agregar esto al .gitignore).
 
-- **Diagrama de arquitectura:** (imagen que muestra la arquitectura del sistema que se utilizará para desplegar el modelo)
+### **Diagrama de arquitectura:**
 
     ![Arquitectura](https://github.com/NCG1379/tdsp_template/blob/097dbb3ac1463f5527c73a19bf28a875b57ffb64/docs/deployment/images/Arquitectura_App.png)
 
