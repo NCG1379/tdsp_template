@@ -12,7 +12,7 @@
 * Todos los prerequisitos son instalados dentro de la imagen, implementando la instalación del ***full_requirements.txt***, el cual también está dentro del ***Dockerfile***.
 * En hardware se requieren 6.1 GB para el despliegue y se debe tener en cuenta el consumo de la base de datos con cada consulta generada, al ser variable el tamaño de la data consultada en las fuentes de datos, el consumo en espacio en disco se debe monitorear.
 
-    ![Texto alternativo](docs\deployment\images\size_consume_docker.png)
+    ![]([docs\deployment\images\size_consume_docker.png](https://github.com/NCG1379/tdsp_template/blob/953b31f997ef3ab56fc373288040d93af5b8a4da/docs/deployment/images/size_consume_docker.png))
 
 - **Requisitos de seguridad:**:
 
