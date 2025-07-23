@@ -38,7 +38,7 @@ Se presenta la arquitectura de los componentes soportados en docker y el desplie
 
 * **Docker MongoDB**: crear la base de datos que almacena los datos de las fuentes consultadas.
 
-* **Docker MongoDB**: documento único que ejecuta todos los dockerfiles y crea los componentes antes mencionados.
+* **Docker Compose**: documento único que ejecuta todos los dockerfiles y crea los componentes antes mencionados.
 
 #### **Rutas de acceso a los archivos:**
 
@@ -48,7 +48,7 @@ Se presenta la arquitectura de los componentes soportados en docker y el desplie
 
 * **Docker MongoDB**: `tdsp_template\docker-compose.yml`
 
-* **Docker MongoDB**: `tdsp_template\docker-compose.yml`
+* **Docker Compose**: `tdsp_template\docker-compose.yml`
 
 ### **Variables de entorno:**
 
