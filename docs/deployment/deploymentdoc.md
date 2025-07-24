@@ -8,11 +8,12 @@
 
 - **Requisitos técnicos:**:
 
+* La compatibilidad de la aplicación solo ha sido probada en sistemas basados en Linux, en Windows se tienen problemas de rutas heredadas para los scripts.
 * La versión de python usada se define dentro del ***Dockerfile*** con el cargue de la imagen `FROM python:3.12-slim-bullseye`.
 * Todos los prerequisitos son instalados dentro de la imagen, implementando la instalación del ***full_requirements.txt***, el cual también está dentro del ***Dockerfile***.
 * En hardware se requieren 6.1 GB para el despliegue y se debe tener en cuenta el consumo de la base de datos con cada consulta generada, al ser variable el tamaño de la data consultada en las fuentes de datos, el consumo en espacio en disco se debe monitorear.
 
-    ![Texto alternativo](docs\deployment\images\size_consume_docker.png)
+![Imagen](https://github.com/NCG1379/tdsp_template/blob/953b31f997ef3ab56fc373288040d93af5b8a4da/docs/deployment/images/size_consume_docker.png)
 
 - **Requisitos de seguridad:**:
 
@@ -24,50 +25,50 @@
 
 - **Diagrama de arquitectura:** (imagen que muestra la arquitectura del sistema que se utilizará para desplegar el modelo)
 
-    ![Texto alternativo](docs\deployment\images\Arquitectura1.png)
+![arquitectura](https://github.com/NCG1379/tdsp_template/blob/40831251e409be83fe8f1e37dbfbd873c068e8e3/docs/deployment/images/Arquitectura_App.png)
 
-## Código de despliegue
+### **Código de despliegue**
 
-- **Archivos principales:**: 
+#### **Archivos principales:**
 
-    * **Docker Backend**: carga el app.py que expone todas las APIs que tiene el backend disponible.
+* **Docker Backend**: carga el app.py que expone todas las APIs que tiene el backend disponible.
 
-    * **Docker Frontend**: carga la UI de usuario para interactuar con las APIs del Backend.
+* **Docker Frontend**: carga la UI de usuario para interactuar con las APIs del Backend.
 
-    * **Docker MongoDB**: crear la base de datos que almacena los datos de las fuentes consultadas.
+* **Docker MongoDB**: crear la base de datos que almacena los datos de las fuentes consultadas.
 
-    * **Docker MongoDB**: documento único que ejecuta todos los dockerfiles y crea los componentes antes mencionados.
+* **Docker MongoDB**: documento único que ejecuta todos los dockerfiles y crea los componentes antes mencionados.
 
 - **Rutas de acceso a los archivos:**:
 
-    * **Docker Backend**: `tdsp_template\Dockerfile`
+* **Docker Backend**: `tdsp_template\Dockerfile`
 
-    * **Docker Frontend**: `tdsp_template\src\nombre_paquete\frontend-mod6\Dockerfile`
+* **Docker Frontend**: `tdsp_template\src\nombre_paquete\frontend-mod6\Dockerfile`
 
-    * **Docker MongoDB**: `tdsp_template\docker-compose.yml`
+* **Docker MongoDB**: `tdsp_template\docker-compose.yml`
 
-    * **Docker MongoDB**: `tdsp_template\docker-compose.yml`
+* **Docker MongoDB**: `tdsp_template\docker-compose.yml`
 
 - **Variables de entorno:**:
 
-    * **Variables de entorno:**: Se debe tener las llaves de los servicios que se van a consumir para poder correr el projecto, se debe dejar en un archivo `.env` y llamar este archivo en los scripts que requieran cargar una variable de entorno.
+* **Variables de entorno:**: Se debe tener las llaves de los servicios que se van a consumir para poder correr el projecto, se debe dejar en un archivo `.env` y llamar este archivo en los scripts que requieran cargar una variable de entorno.
 
-        ~~~
-        VT_API_KEY=""
-        ABUSE_IP_DB_API_KEY=""
-        SHODAN_API_KEY=""
+~~~
+VT_API_KEY=""
+ABUSE_IP_DB_API_KEY=""
+SHODAN_API_KEY=""
 
 
-        DRIVEID = ""
+DRIVEID = ""
 
-        HUGGINGFACE_TOKEN = ''
+HUGGINGFACE_TOKEN = ''
 
-        DEEPSEEK_KEY=""
-        OPENAI_KEY=""
-        ANTHROPIC_KEY=""
-        ~~~
+DEEPSEEK_KEY=""
+OPENAI_KEY=""
+ANTHROPIC_KEY=""
+~~~
 
-## Documentación del despliegue
+### **Documentación del despliegue**
 
 - **Instrucciones de instalación:** 
 
@@ -121,7 +122,7 @@ El despliegue del proyecto se realiza desde un docker compose [herramienta para 
 | **DeepSeek-R1**                  |          --              | $0.55 (entrada) / $2.19 (salida) por 1M tokens | API eficiente, útil para análisis estructurados   |
 | **Claude 3.5 Sonnet**            |          --              | $3 (entrada) / $15 (salida) por 1M tokens   | Anthropic API, modelo intermedio                      |
 
-### Detalles y consideraciones
+#### Detalles y consideraciones
 
 - **Infraestructura AWS Fargate:** costos para ejecución continua 24/7 durante un mes, sin incluir almacenamiento o tráfico adicional.
 - **Modelos IA/API:** costos únicamente de tokens procesados; el uso real puede variar según volumen de consultas.
