@@ -2,7 +2,7 @@
 
 ## Nombre del Proyecto
 
-Creación de agente IA usando LangChain Framework
+Agentes de IA para Análisis de Indicadores de Compromiso
 
 ## Objetivo del Proyecto
 
