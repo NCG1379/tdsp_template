@@ -4,28 +4,13 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import tools_condition, ToolNode
 from langchain_core.messages import HumanMessage, SystemMessage, BaseMessage
 from langchain_anthropic import ChatAnthropic
+from scripts.data_acquisition.dtaq_main import VirusTotal, AbuseIPDB, WHOIS_RDAP, ShodanIO
+from scripts.utils.output_parser import extract_and_parse_json
+from scripts.utils.mongo_handler import insert_docs_to_db
 
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
-try:
-    from ..data_acquisition import dtaq_main as dtaq
-    from ..utils.output_parser import extract_and_parse_json
-    from ..utils.mongo_handler import insert_docs_to_db
-except NameError:
-    from scripts.data_acquisition import dtaq_main as dtaq
-    from scripts.utils.output_parser import extract_and_parse_json
-    from scripts.utils.mongo_handler import insert_docs_to_db
-except ImportError:
-    # Agrega el directorio del módulo al sys.path
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data_acquisition')))
-
-    from dtaq_main import VirusTotal, AbuseIPDB, WHOIS_RDAP, ShodanIO
-    from output_parser import extract_and_parse_json
-    from mongo_handler import insert_docs_to_db
-
-
 
 current_dir = Path(__file__).resolve().parent
 dotenv_path = current_dir.parent.parent / '.env'
@@ -72,7 +57,8 @@ def assistant_node(state: AgentState):
     messages = state["messages"]
     system_message = SystemMessage(
         content="You are a cybersecurity researcher. You can use the provided tools to gather information. "
-                "One way communication. Retrieve one json-like file with 3 items: Summary, Recommendation, Score (0-100)")
+                "One way communication. Retrieve one json-like file with 3 items: "
+                "Summary (50-80 words long), Recommendation (40-60 words long), Score (0-100)")
 
     response = llm_with_tools.invoke([system_message] + messages)
 

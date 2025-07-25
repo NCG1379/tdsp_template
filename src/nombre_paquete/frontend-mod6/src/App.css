@@ -1,0 +1,136 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f6f8fa;
+  color: #333;
+  margin: 0;
+  padding: 2rem;
+}
+
+h2 {
+  text-align: center;
+  color: #0057b7;
+  margin-bottom: 2rem;
+}
+
+h3 {
+  text-align: center;
+  color: #0057b7;
+  margin-bottom: 1rem;
+}
+
+input {
+  padding: 0.6rem;
+  width: 200px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 0.6rem 1rem;
+  margin-left: 0.5rem;
+  background-color: #0057b7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+button:hover:enabled {
+  background-color: #003f8c;
+}
+
+
+#ip-input-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+
+#ip-input-box-label-text {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  font-family: 'Times New Roman', Times, serif
+
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.result-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  background-color: #eef2f7;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+}
+
+.card-key {
+  font-weight: bold;
+  color: #0057b7;
+}
+
+.card-value {
+  color: #333;
+  max-width: 60%;
+  word-break: break-word;
+  text-align: left;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.spinner {
+  margin: 2rem auto;
+  border: 8px solid #eee;
+  border-top: 8px solid #0078d4;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
